@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Tidak Ditemukan - Raga Nusantara</title>
+    <title>Halaman Tidak Ditemukan - Raga Nusantara v3.1</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -29,6 +29,13 @@
         .error-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
         }
         
         .error-title {
@@ -43,10 +50,26 @@
             line-height: 1.6;
         }
         
+        .error-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-item {
+            background: rgba(192, 147, 62, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 2px solid #c0933e;
+            font-size: 0.9rem;
+        }
+        
         .error-actions {
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            margin-bottom: 2rem;
         }
         
         .btn-error {
@@ -76,7 +99,6 @@
         }
         
         .navigation-links {
-            margin-top: 2rem;
             display: flex;
             justify-content: center;
             gap: 1rem;
@@ -87,22 +109,52 @@
             color: #c0933e;
             text-decoration: none;
             font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
         
         .nav-link:hover {
-            text-decoration: underline;
+            background: rgba(192, 147, 62, 0.1);
+            text-decoration: none;
+        }
+        
+        .timer-preview {
+            background: rgba(0, 123, 255, 0.1);
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .timer-preview h4 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
     <div class="error-container">
         <div class="error-content">
-            <div class="error-icon">🏯</div>
+            <div class="error-icon">⏰🏯</div>
             <h1 class="error-title">404 - Kerajaan Hilang</h1>
             <p class="error-message">
                 Wahai kesatria! Sepertinya Anda tersesat di jalan yang salah. 
                 Halaman yang Anda cari tidak ditemukan dalam peta kerajaan kami.
+                Jangan khawatir, sistem timer quest kami tetap berjalan!
             </p>
+            
+            <div class="timer-preview">
+                <h4>🎯 Fitur Timer Quest v3.1</h4>
+                <p>Quest dengan timer khusus, progress real-time, dan auto-completion!</p>
+            </div>
+            
+            <div class="error-features">
+                <div class="feature-item">⏰ Timer Persisten</div>
+                <div class="feature-item">📊 Progress Bar</div>
+                <div class="feature-item">🎯 Kategori Quest</div>
+                <div class="feature-item">⚡ Auto Completion</div>
+            </div>
             
             <div class="error-actions">
                 <button class="btn-error btn-error-primary" onclick="goHome()">
@@ -131,21 +183,35 @@
         }
         
         function showLogin() {
-            // Redirect to login page
             window.location.href = 'index.html';
-            // Note: Actual page navigation will be handled by the main app
         }
         
         function showSignup() {
-            // Redirect to signup page
             window.location.href = 'index.html';
-            // Note: Actual page navigation will be handled by the main app
         }
         
-        // Auto-redirect after 10 seconds
+        // Auto-redirect after 15 seconds
         setTimeout(() => {
             goHome();
-        }, 10000);
+        }, 15000);
+        
+        // Show countdown
+        let countdown = 15;
+        const countdownElement = document.createElement('div');
+        countdownElement.style.marginTop = '1rem';
+        countdownElement.style.color = '#8b4513';
+        countdownElement.style.fontSize = '0.9rem';
+        document.querySelector('.error-actions').appendChild(countdownElement);
+        
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = `Otomatis redirect dalam ${countdown} detik...`;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                goHome();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
