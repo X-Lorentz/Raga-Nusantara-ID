@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raga Nusantara v3.0 - RPG Produktivitas</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h2>Memuat Kerajaan Nusantara...</h2>
+            <p>Bersiaplah untuk petualangan produktivitas!</p>
+        </div>
+    </div>
+
+    <!-- Splash Screen -->
+    <section id="splashPage" class="page">
+        <div class="splash-container">
+            <div class="splash-header">
+                <h1 class="game-title">🏯 RAGA NUSANTARA</h1>
+                <p class="game-subtitle">RPG Produktivitas Bertema Nusantara</p>
+            </div>
+            <div class="splash-content">
+                <div class="feature-list">
+                    <div class="feature-item">🎯 Quest Harian</div>
+                    <div class="feature-item">⚡ Sistem Level</div>
+                    <div class="feature-item">🛒 Toko Item</div>
+                    <div class="feature-item">🎵 Musik Tradisional</div>
+                </div>
+                <div class="splash-buttons">
+                    <button class="btn-primary" onclick="showSignup()">Memulai Petualangan</button>
+                    <button class="btn-secondary" onclick="showLogin()">Masuk ke Kerajaan</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sign Up Page -->
+    <section id="signupPage" class="page">
+        <div class="container">
+            <div class="page-header">
+                <h2>📜 Daftar ke Kerajaan</h2>
+                <p>Bergabunglah dengan para kesatria produktif!</p>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="signupUsername" placeholder="Nama Kesatria" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <div class="password-container">
+                    <input type="password" id="signupPassword" placeholder="Kata Sandi Rahasia" class="form-input">
+                    <span class="toggle-password" onclick="togglePassword('signupPassword', this)">👁️</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <h3>Pilih Jalan Hidupmu</h3>
+                <div class="avatar-select">
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="ksatria" checked>
+                        <div class="avatar-card">
+                            <img src="https://i.imgur.com/b0tZAvk.png" alt="Ksatria">
+                            <span>Ksatria</span>
+                        </div>
+                    </label>
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="pendeta">
+                        <div class="avatar-card">
+                            <img src="https://i.imgur.com/wgMJfZQ.png" alt="Pendeta">
+                            <span>Pendeta</span>
+                        </div>
+                    </label>
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="petani">
+                        <div class="avatar-card">
+                            <img src="https://i.imgur.com/ToTzx7G.png" alt="Petani">
+                            <span>Petani</span>
+                        </div>
+                    </label>
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="pedagang">
+                        <div class="avatar-card">
+                            <img src="https://i.imgur.com/31fFEsK.png" alt="Pedagang">
+                            <span>Pedagang</span>
+                        </div>
+                    </label>
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="pelukis">
+                        <div class="avatar-card">
+                            <img src="https://i.imgur.com/3lMJkWe.png" alt="Pelukis">
+                            <span>Pelukis</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <button id="signupBtn" class="btn-primary">Daftar & Masuk</button>
+            
+            <div class="page-footer">
+                <p>Sudah punya akun? <a href="#" onclick="showLogin()">Masuk ke kerajaan</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Page -->
+    <section id="loginPage" class="page">
+        <div class="container">
+            <div class="page-header">
+                <h2>⚔️ Masuk ke Kerajaan</h2>
+                <p>Selamat datang kembali, kesatria!</p>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="loginUsername" placeholder="Nama Kesatria" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <div class="password-container">
+                    <input type="password" id="loginPassword" placeholder="Kata Sandi Rahasia" class="form-input">
+                    <span class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</span>
+                </div>
+            </div>
+
+            <button id="loginBtn" class="btn-primary">Masuk</button>
+            
+            <div class="page-footer">
+                <p>Belum punya akun? <a href="#" onclick="showSignup()">Daftar di sini</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Game Page -->
+    <section id="gamePage" class="page">
+        <!-- Background Music -->
+        <audio id="bgMusic" loop>
+            <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3812c9e8c5.mp3?filename=gamelan-bali-10886.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Floating Particles Canvas -->
+        <canvas id="particlesCanvas"></canvas>
+
+        <div class="game-container">
+            <!-- Header -->
+            <header class="game-header">
+                <div class="player-info">
+                    <img id="playerAvatar" class="player-avatar" alt="Avatar">
+                    <div class="player-details">
+                        <h2 id="playerName" class="player-name"></h2>
+                        <div class="level-badge">Level <span id="level">1</span></div>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button id="musicBtn" class="btn-icon" onclick="toggleMusic()">🔊</button>
+                    <button class="btn-icon" onclick="showStatsModal()">📊</button>
+                </div>
+            </header>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="xp-container">
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xpFill"></div>
+                    </div>
+                    <div class="xp-text">
+                        <span id="xp">0</span>/<span id="xpNeeded">50</span> XP
+                    </div>
+                </div>
+                <div class="resources">
+                    <div class="resource-item">
+                        <span class="resource-icon">🪙</span>
+                        <span id="gold" class="resource-value">100</span>
+                    </div>
+                    <div class="resource-item">
+                        <span class="resource-icon">💎</span>
+                        <span id="gems" class="resource-value">5</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Quests -->
+            <section class="quests-section">
+                <h3 class="section-title">🎯 Quest Harian</h3>
+                <div id="questList" class="quests-list"></div>
+                <button class="btn-task" onclick="completeTask()">
+                    <span class="btn-icon">✨</span>
+                    Selesaikan Tugas
+                    <span class="btn-badge">+10 XP</span>
+                </button>
+            </section>
+
+            <!-- Shop -->
+            <section class="shop-section">
+                <h3 class="section-title">🛒 Toko Kerajaan</h3>
+                <div id="shopItems" class="shop-items"></div>
+            </section>
+
+            <!-- Inventory -->
+            <section class="inventory-section">
+                <h3 class="section-title">🎒 Inventory</h3>
+                <div id="inventoryItems" class="inventory-items"></div>
+            </section>
+
+            <!-- Navigation -->
+            <nav class="game-nav">
+                <button class="btn-nav" onclick="showAchievements()">🏆 Pencapaian</button>
+                <button class="btn-nav btn-logout" onclick="logout()">🚪 Keluar</button>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📊 Statistik Permainan</h3>
+                <button class="modal-close" onclick="closeStatsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotalXP">0</div>
+                        <div class="stat-label">Total XP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTasksCompleted">0</div>
+                        <div class="stat-label">Tugas Selesai</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statQuestsCompleted">0</div>
+                        <div class="stat-label">Quest Selesai</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statDaysActive">1</div>
+                        <div class="stat-label">Hari Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements Modal -->
+    <div id="achievementsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🏆 Pencapaian</h3>
+                <button class="modal-close" onclick="closeAchievementsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="achievementsList" class="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
