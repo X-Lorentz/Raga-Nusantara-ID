@@ -1,5 +1,5 @@
 /* ======================= */
-/* 🎮 RAGA NUSANTARA v3.0 */
+/* 🎮 RAGA NUSANTARA v3.1 */
 /* ======================= */
 
 /* Reset & Base Styles */
@@ -15,6 +15,14 @@
     --primary-light: #ffedb0;
     --secondary: #a52a2a;
     --accent: #28a745;
+    --timer-active: #007bff;
+    --timer-paused: #6c757d;
+    --timer-completed: #28a745;
+    --work-color: #dc3545;
+    --study-color: #17a2b8;
+    --exercise-color: #28a745;
+    --creative-color: #e83e8c;
+    --other-color: #6f42c1;
     --background: linear-gradient(135deg, #ffedb0 0%, #f6d36d 50%, #e8b340 100%);
     --card-bg: rgba(255, 253, 245, 0.95);
     --text-dark: #5a3921;
@@ -200,6 +208,56 @@ body {
     padding: 0.25rem 0.5rem;
     border-radius: 20px;
     font-size: 0.9rem;
+}
+
+/* Timer Control Buttons */
+.btn-timer {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--primary-gold);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-timer.start {
+    background: linear-gradient(135deg, var(--accent), #1e7e34);
+    color: white;
+    border-color: var(--accent);
+}
+
+.btn-timer.pause {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
+    border-color: #ffc107;
+}
+
+.btn-timer.resume {
+    background: linear-gradient(135deg, var(--timer-active), #0056b3);
+    color: white;
+    border-color: var(--timer-active);
+}
+
+.btn-timer.stop {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-color: #dc3545;
+}
+
+.btn-timer.complete {
+    background: linear-gradient(135deg, var(--timer-completed), #1e7e34);
+    color: white;
+    border-color: var(--timer-completed);
+}
+
+.btn-timer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Form Styles */
@@ -418,7 +476,54 @@ body {
     text-align: center;
 }
 
-/* Quests */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.active-timer-info {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--timer-active);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Quest Categories Filter */
+.quest-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.category-filter {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--primary-gold);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.category-filter.active {
+    background: linear-gradient(135deg, var(--primary-gold), var(--primary-dark));
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+.category-filter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Quest Styles */
 .quests-list {
     margin-bottom: 1rem;
 }
@@ -430,29 +535,96 @@ body {
     padding: 1rem;
     margin-bottom: 0.75rem;
     transition: all 0.3s ease;
+    position: relative;
+}
+
+.quest.active {
+    border-color: var(--timer-active);
+    background: rgba(0, 123, 255, 0.05);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.quest.paused {
+    border-color: var(--timer-paused);
+    background: rgba(108, 117, 125, 0.05);
+}
+
+.quest.completed {
+    border-color: var(--timer-completed);
+    background: rgba(40, 167, 69, 0.05);
+}
+
+.quest.work .quest-category {
+    color: var(--work-color);
+}
+
+.quest.study .quest-category {
+    color: var(--study-color);
+}
+
+.quest.exercise .quest-category {
+    color: var(--exercise-color);
+}
+
+.quest.creative .quest-category {
+    color: var(--creative-color);
+}
+
+.quest.other .quest-category {
+    color: var(--other-color);
 }
 
 .quest:hover {
     transform: translateX(5px);
-    border-color: var(--primary-dark);
 }
 
-.quest.done {
-    opacity: 0.7;
-    background: rgba(211, 183, 110, 0.3);
-}
-
-.quest label {
+.quest-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    cursor: pointer;
-    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.quest-category {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.quest-info {
+    flex: 1;
+    margin-right: 0.5rem;
 }
 
 .quest-title {
-    flex: 1;
-    margin-left: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+}
+
+.quest-title:hover {
+    text-decoration: underline;
+}
+
+.quest-description {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    opacity: 0.8;
+    margin-bottom: 0.5rem;
+}
+
+.quest-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.quest-duration, .quest-reward {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .quest-reward {
@@ -461,6 +633,129 @@ body {
     border-radius: 8px;
     font-size: 0.9rem;
     color: var(--text-light);
+}
+
+/* Timer Display */
+.timer-display {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.timer-progress-container {
+    margin-bottom: 0.5rem;
+}
+
+.timer-progress-bar {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.timer-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--timer-active), #0056b3);
+    border-radius: 10px;
+    transition: width 1s linear;
+    position: relative;
+}
+
+.timer-progress.paused {
+    background: linear-gradient(90deg, var(--timer-paused), #545b62);
+}
+
+.timer-progress.completed {
+    background: linear-gradient(90deg, var(--timer-completed), #1e7e34);
+}
+
+.timer-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.timer-time {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+}
+
+.timer-status {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+.timer-status.running {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--timer-active);
+}
+
+.timer-status.paused {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--timer-paused);
+}
+
+.timer-status.completed {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--timer-completed);
+}
+
+/* Timer Controls */
+.timer-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Active Timers Section */
+.active-timers-section {
+    margin-bottom: 1.5rem;
+}
+
+.active-timers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.active-timer-item {
+    background: rgba(255, 248, 225, 0.8);
+    border: 2px solid var(--timer-active);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.active-timer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.active-timer-title {
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.active-timer-time {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: var(--timer-active);
+}
+
+.active-timer-controls {
+    display: flex;
+    gap: 0.25rem;
 }
 
 /* Shop */
@@ -753,6 +1048,22 @@ body {
     
     .game-nav {
         flex-direction: column;
+    }
+    
+    .timer-controls {
+        flex-direction: column;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .active-timer-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
     }
 }
 
