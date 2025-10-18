@@ -1,85 +1,67 @@
-# 🏯 Raga Nusantara v3.0
+# 🏯 Raga Nusantara v3.1
 
-RPG Produktivitas bertema Nusantara yang membantu Anda tetap produktif dengan sistem game yang menyenangkan!
+RPG Produktivitas bertema Nusantara dengan **Timer Quest System** yang canggih!
 
-## 🎮 Fitur Utama
+## 🎮 Fitur Baru v3.1
 
-- **Sistem Autentikasi**: Daftar dan login dengan avatar pilihan
-- **Quest Harian**: 5 quest berbeda setiap hari dengan reward XP dan Gold
-- **Sistem Level**: Naik level dengan XP, kebutuhan XP ×1.5 setiap level
-- **Toko & Inventory**: Beli item dan kumpulkan koleksi
-- **Pencapaian**: Unlock achievements untuk tetap termotivasi
-- **Statistik**: Lacak progress dan produktivitas
-- **Musik**: Musik gamelan tradisional
-- **Efek Visual**: Partikel dan animasi yang menarik
+### ⏰ Enhanced Timer Quest System
+- **Timer Persisten**: Timer tetap berjalan meski halaman direfresh
+- **Progress Bar Real-time**: Visualisasi progress waktu yang live
+- **Kontrol Timer Lengkap**: Mulai, Jeda, Lanjutkan, Hentikan
+- **Kategori Quest**: Work, Study, Exercise, Creative, Other dengan ikon berbeda
+- **Auto-completion**: Quest otomatis selesai ketika timer habis
+- **Visual Indicators**: Quest aktif ditandai dengan highlight khusus
+
+### 🎯 Fitur Timer Spesifik
+- **Multiple Active Timers**: Beberapa quest bisa berjalan bersamaan
+- **Active Timers Overview**: Panel khusus untuk monitor timer aktif
+- **Quest Categories Filter**: Filter quest berdasarkan kategori
+- **Quest Detail Modal**: Informasi detail setiap quest
+- **Persistent State**: Status timer tersimpan di localStorage
 
 ## 🚀 Cara Menjalankan
 
 ### Di VS Code (Local)
-1. Download semua file (index.html, style.css, script.js, 404.html)
+1. Download semua file
 2. Buka folder di VS Code
 3. Jalankan dengan Live Server extension
 
 ### Di GitHub Pages
-1. Buat repository baru di GitHub
-2. Upload semua file ke root repository
-3. Aktifkan GitHub Pages di Settings → Pages
-4. Pilih branch main dan folder / (root)
-5. Akses di: `https://username.github.io/repository-name`
+1. Upload semua file ke repository
+2. Aktifkan GitHub Pages di Settings
+3. Akses di: `https://username.github.io/repo-name`
 
 ## 👤 Akun Contoh
-
 - **Username**: test | **Password**: 123456 (Level 10)
 - **Username**: asep | **Password**: 4321 (Level 20)
 
-## 🛠 Teknologi
+## 🕒 Cara Menggunakan Timer Quest
 
+1. **Pilih Quest**: Klik quest yang ingin dikerjakan
+2. **Mulai Timer**: Klik "Mulai" untuk memulai countdown
+3. **Monitor Progress**: Lihat progress bar dan waktu tersisa
+4. **Kontrol Timer**: 
+   - ⏸️ Jeda: Untuk istirahat sejenak
+   - ▶️ Lanjutkan: Untuk melanjutkan timer
+   - ⏹️ Hentikan: Untuk membatalkan quest
+5. **Auto Reward**: Quest otomatis selesai dan beri reward ketika timer habis
+
+## 🎯 Kategori Quest
+- 💼 **Work**: Tugas pekerjaan dan profesional
+- 📚 **Study**: Belajar dan pengembangan skill
+- 💪 **Exercise**: Olahraga dan kesehatan
+- 🎨 **Creative**: Projek kreatif dan seni
+- 📝 **Other**: Aktivitas lainnya
+
+## 🔧 Teknologi
 - HTML5, CSS3, JavaScript (ES6+)
-- Local Storage untuk penyimpanan data
-- CSS Grid & Flexbox untuk layout
+- Local Storage untuk persistensi data
 - Canvas API untuk efek partikel
+- CSS Grid & Flexbox untuk layout responsif
 
 ## 📱 Responsif
-
-Website fully responsive dan bekerja optimal di:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (320px - 767px)
-
-## 🎯 Cara Bermain
-
-1. **Daftar/Login**: Buat akun atau gunakan akun contoh
-2. **Selesaikan Quest**: Centang quest harian untuk reward
-3. **Kerjakan Tugas**: Klik "Selesaikan Tugas" untuk XP dan Gold
-4. **Naik Level**: Kumpulkan XP untuk naik level
-5. **Beli Item**: Gunakan Gold untuk beli item di toko
-6. **Kumpulkan Achievement**: Buka pencapaian khusus
-
-## 📄 File Structure
-raga-nusantara-v3/
-├── index.html # Halaman utama
-├── style.css # Stylesheet lengkap
-├── script.js # Logic aplikasi
-├── 404.html # Halaman error yang diperbagus
-└── README.md # Dokumentasi
-
-
-## 🔧 Troubleshooting
-
-**Error 404 di GitHub Pages?**
-- Pastikan semua file ada di root repository
-- Nama file harus tepat (index.html, bukan Index.html)
-- Tunggu 5-10 menit setelah deploy
-
-**Audio tidak otomatis play?**
-- Klik layar sekali untuk mengaktifkan audio
-- Browser membutuhkan interaksi user pertama
-
-**Data hilang?**
-- Data disimpan di localStorage browser
-- Clear cache/history akan menghapus progress
+Fully responsive dan bekerja optimal di semua device!
 
 ---
 
-
-Dibuat dengan ❤️ untuk produktivitas yang menyenangkan!
+**Raga Nusantara v3.1** - Tingkatkan produktivitas dengan sistem game yang engaging! 🚀
