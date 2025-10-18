@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raga Nusantara v3.0 - RPG Produktivitas</title>
+    <title>Raga Nusantara v3.1 - RPG Produktivitas</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,7 +13,7 @@
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <h2>Memuat Kerajaan Nusantara...</h2>
-            <p>Bersiaplah untuk petualangan produktivitas!</p>
+            <p>Mempersiapkan sistem quest timer yang canggih!</p>
         </div>
     </div>
 
@@ -21,14 +21,16 @@
     <section id="splashPage" class="page">
         <div class="splash-container">
             <div class="splash-header">
-                <h1 class="game-title">🏯 RAGA NUSANTARA</h1>
-                <p class="game-subtitle">RPG Produktivitas Bertema Nusantara</p>
+                <h1 class="game-title">🏯 RAGA NUSANTARA v3.1</h1>
+                <p class="game-subtitle">RPG Produktivitas dengan Timer Quest Canggih</p>
             </div>
             <div class="splash-content">
                 <div class="feature-list">
-                    <div class="feature-item">🎯 Quest Harian</div>
-                    <div class="feature-item">⚡ Sistem Level</div>
-                    <div class="feature-item">🛒 Toko Item</div>
+                    <div class="feature-item">⏰ Timer Quest</div>
+                    <div class="feature-item">📊 Progress Real-time</div>
+                    <div class="feature-item">🎯 Kategori Quest</div>
+                    <div class="feature-item">⚡ Auto Completion</div>
+                    <div class="feature-item">💾 Persistent Timer</div>
                     <div class="feature-item">🎵 Musik Tradisional</div>
                 </div>
                 <div class="splash-buttons">
@@ -182,15 +184,38 @@
                 </div>
             </section>
 
-            <!-- Daily Quests -->
+            <!-- Timer Quest Section -->
             <section class="quests-section">
-                <h3 class="section-title">🎯 Quest Harian</h3>
+                <div class="section-header">
+                    <h3 class="section-title">🎯 Timer Quest</h3>
+                    <div class="active-timer-info" id="activeTimerInfo">
+                        <span id="activeQuestCount">0</span> quest aktif
+                    </div>
+                </div>
+                
+                <!-- Quest Categories Filter -->
+                <div class="quest-categories">
+                    <button class="category-filter active" data-category="all">Semua</button>
+                    <button class="category-filter" data-category="work">💼 Kerja</button>
+                    <button class="category-filter" data-category="study">📚 Belajar</button>
+                    <button class="category-filter" data-category="exercise">💪 Olahraga</button>
+                    <button class="category-filter" data-category="creative">🎨 Kreatif</button>
+                    <button class="category-filter" data-category="other">📝 Lainnya</button>
+                </div>
+                
                 <div id="questList" class="quests-list"></div>
+                
                 <button class="btn-task" onclick="completeTask()">
                     <span class="btn-icon">✨</span>
-                    Selesaikan Tugas
+                    Selesaikan Tugas Cepat
                     <span class="btn-badge">+10 XP</span>
                 </button>
+            </section>
+
+            <!-- Active Timers Overview -->
+            <section class="active-timers-section" id="activeTimersSection">
+                <h3 class="section-title">⏰ Timer Aktif</h3>
+                <div id="activeTimersList" class="active-timers-list"></div>
             </section>
 
             <!-- Shop -->
@@ -238,6 +263,14 @@
                         <div class="stat-value" id="statDaysActive">1</div>
                         <div class="stat-label">Hari Aktif</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTimerQuests">0</div>
+                        <div class="stat-label">Timer Quest</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotalTime">0j</div>
+                        <div class="stat-label">Total Waktu</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -252,6 +285,19 @@
             </div>
             <div class="modal-body">
                 <div id="achievementsList" class="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quest Detail Modal -->
+    <div id="questDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="questDetailTitle">Detail Quest</h3>
+                <button class="modal-close" onclick="closeQuestDetailModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="questDetailContent"></div>
             </div>
         </div>
     </div>
