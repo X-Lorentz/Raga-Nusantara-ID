@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raga Nusantara v3.2 - RPG Produktivitas</title>
+    <title>Raga Nusantara v3.3 - Enhanced Productivity RPG</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Loading Screen -->
     <div id="loadingScreen" class="loading-screen">
         <div class="loading-content">
             <div class="loading-spinner"></div>
-            <h2>Memuat Kerajaan Nusantara...</h2>
-            <p>Mempersiapkan sistem quest dan timer yang lebih baik!</p>
+            <h2>Memuat Kerajaan Nusantara v3.3...</h2>
+            <p>Mempersiapkan sistem guild dan achievement progression!</p>
         </div>
     </div>
 
@@ -21,21 +22,26 @@
     <section id="splashPage" class="page">
         <div class="splash-container">
             <div class="splash-header">
-                <h1 class="game-title">🏯 RAGA NUSANTARA v3.2</h1>
-                <p class="game-subtitle">RPG Produktivitas dengan Timer Quest & Refresh System</p>
+                <h1 class="game-title">🏯 RAGA NUSANTARA v3.3</h1>
+                <p class="game-subtitle">Enhanced RPG dengan Sistem Guild & Achievement Progression</p>
             </div>
             <div class="splash-content">
                 <div class="feature-list">
-                    <div class="feature-item">⏰ Timer Per Detik</div>
-                    <div class="feature-item">🔄 Refresh Quest</div>
-                    <div class="feature-item">🎯 20+ Variasi Quest</div>
-                    <div class="feature-item">📊 Progress Real-time</div>
-                    <div class="feature-item">⚡ Auto Completion</div>
-                    <div class="feature-item">💾 Persistent Timer</div>
+                    <div class="feature-item">👥 Sistem Guild</div>
+                    <div class="feature-item">🏆 Achievement Progression</div>
+                    <div class="feature-item">📅 Daily Challenges</div>
+                    <div class="feature-item">🎯 Custom Quests</div>
+                    <div class="feature-item">📊 Advanced Analytics</div>
+                    <div class="feature-item">⚡ Offline Progress</div>
                 </div>
+                <div class="version-badge">v3.3 - Enhanced Edition</div>
                 <div class="splash-buttons">
-                    <button class="btn-primary" onclick="showSignup()">Memulai Petualangan</button>
-                    <button class="btn-secondary" onclick="showLogin()">Masuk ke Kerajaan</button>
+                    <button class="btn-primary" onclick="showSignup()">
+                        <i class="fas fa-play"></i> Mulai Petualangan
+                    </button>
+                    <button class="btn-secondary" onclick="showLogin()">
+                        <i class="fas fa-sign-in-alt"></i> Masuk ke Kerajaan
+                    </button>
                 </div>
             </div>
         </div>
@@ -45,7 +51,7 @@
     <section id="signupPage" class="page">
         <div class="container">
             <div class="page-header">
-                <h2>📜 Daftar ke Kerajaan</h2>
+                <h2><i class="fas fa-scroll"></i> Daftar ke Kerajaan</h2>
                 <p>Bergabunglah dengan para kesatria produktif!</p>
             </div>
             
@@ -56,12 +62,14 @@
             <div class="form-group">
                 <div class="password-container">
                     <input type="password" id="signupPassword" placeholder="Kata Sandi Rahasia" class="form-input">
-                    <span class="toggle-password" onclick="togglePassword('signupPassword', this)">👁️</span>
+                    <span class="toggle-password" onclick="togglePassword('signupPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </span>
                 </div>
             </div>
 
             <div class="form-group">
-                <h3>Pilih Jalan Hidupmu</h3>
+                <h3><i class="fas fa-user"></i> Pilih Jalan Hidupmu</h3>
                 <div class="avatar-select">
                     <label class="avatar-option">
                         <input type="radio" name="avatar" value="ksatria" checked>
@@ -101,7 +109,9 @@
                 </div>
             </div>
 
-            <button id="signupBtn" class="btn-primary">Daftar & Masuk</button>
+            <button id="signupBtn" class="btn-primary">
+                <i class="fas fa-user-plus"></i> Daftar & Masuk
+            </button>
             
             <div class="page-footer">
                 <p>Sudah punya akun? <a href="#" onclick="showLogin()">Masuk ke kerajaan</a></p>
@@ -113,7 +123,7 @@
     <section id="loginPage" class="page">
         <div class="container">
             <div class="page-header">
-                <h2>⚔️ Masuk ke Kerajaan</h2>
+                <h2><i class="fas fa-sign-in-alt"></i> Masuk ke Kerajaan</h2>
                 <p>Selamat datang kembali, kesatria!</p>
             </div>
             
@@ -124,11 +134,15 @@
             <div class="form-group">
                 <div class="password-container">
                     <input type="password" id="loginPassword" placeholder="Kata Sandi Rahasia" class="form-input">
-                    <span class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</span>
+                    <span class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                        <i class="fas fa-eye"></i>
+                    </span>
                 </div>
             </div>
 
-            <button id="loginBtn" class="btn-primary">Masuk</button>
+            <button id="loginBtn" class="btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Masuk
+            </button>
             
             <div class="page-footer">
                 <p>Belum punya akun? <a href="#" onclick="showSignup()">Daftar di sini</a></p>
@@ -153,12 +167,21 @@
                     <img id="playerAvatar" class="player-avatar" alt="Avatar">
                     <div class="player-details">
                         <h2 id="playerName" class="player-name"></h2>
-                        <div class="level-badge">Level <span id="level">1</span></div>
+                        <div class="level-badge">
+                            <i class="fas fa-star"></i> Level <span id="level">1</span>
+                        </div>
                     </div>
                 </div>
                 <div class="header-controls">
-                    <button id="musicBtn" class="btn-icon" onclick="toggleMusic()">🔊</button>
-                    <button class="btn-icon" onclick="showStatsModal()">📊</button>
+                    <button id="musicBtn" class="btn-icon" onclick="toggleMusic()">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button class="btn-icon" onclick="showStatsModal()">
+                        <i class="fas fa-chart-bar"></i>
+                    </button>
+                    <button class="btn-icon" onclick="showGuildModal()">
+                        <i class="fas fa-users"></i>
+                    </button>
                 </div>
             </header>
 
@@ -174,20 +197,39 @@
                 </div>
                 <div class="resources">
                     <div class="resource-item">
-                        <span class="resource-icon">🪙</span>
+                        <span class="resource-icon"><i class="fas fa-coins"></i></span>
                         <span id="gold" class="resource-value">100</span>
                     </div>
                     <div class="resource-item">
-                        <span class="resource-icon">💎</span>
+                        <span class="resource-icon"><i class="fas fa-gem"></i></span>
                         <span id="gems" class="resource-value">5</span>
                     </div>
+                    <div class="resource-item">
+                        <span class="resource-icon"><i class="fas fa-fire"></i></span>
+                        <span id="energy" class="resource-value">100</span>
+                    </div>
                 </div>
+            </section>
+
+            <!-- Daily Challenge Section -->
+            <section class="challenge-section" id="dailyChallengeSection">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-calendar-day"></i> Tantangan Harian
+                    </h3>
+                    <div class="challenge-progress" id="challengeProgress">
+                        <span id="completedChallenges">0</span>/3 Selesai
+                    </div>
+                </div>
+                <div id="dailyChallenges" class="challenges-list"></div>
             </section>
 
             <!-- Timer Quest Section -->
             <section class="quests-section">
                 <div class="section-header">
-                    <h3 class="section-title">🎯 Timer Quest</h3>
+                    <h3 class="section-title">
+                        <i class="fas fa-tasks"></i> Timer Quest
+                    </h3>
                     <div class="active-timer-info" id="activeTimerInfo">
                         <span id="activeQuestCount">0</span> quest aktif
                     </div>
@@ -196,26 +238,41 @@
                 <!-- Quest Controls -->
                 <div class="quest-controls">
                     <button class="btn-refresh-all" onclick="refreshAllQuests()" id="refreshAllBtn">
-                        🔄 Refresh Semua Quest
-                        <span class="cost-badge">50 🪙</span>
+                        <i class="fas fa-sync-alt"></i> Refresh Semua Quest
+                        <span class="cost-badge">50 <i class="fas fa-coins"></i></span>
+                    </button>
+                    <button class="btn-refresh-all" onclick="showCreateQuestModal()">
+                        <i class="fas fa-plus"></i> Buat Quest
                     </button>
                 </div>
                 
                 <!-- Quest Categories Filter -->
                 <div class="quest-categories">
                     <button class="category-filter active" data-category="all">Semua</button>
-                    <button class="category-filter" data-category="work">💼 Kerja</button>
-                    <button class="category-filter" data-category="study">📚 Belajar</button>
-                    <button class="category-filter" data-category="exercise">💪 Olahraga</button>
-                    <button class="category-filter" data-category="creative">🎨 Kreatif</button>
-                    <button class="category-filter" data-category="personal">👤 Personal</button>
-                    <button class="category-filter" data-category="other">📝 Lainnya</button>
+                    <button class="category-filter" data-category="work">
+                        <i class="fas fa-briefcase"></i> Kerja
+                    </button>
+                    <button class="category-filter" data-category="study">
+                        <i class="fas fa-book"></i> Belajar
+                    </button>
+                    <button class="category-filter" data-category="exercise">
+                        <i class="fas fa-running"></i> Olahraga
+                    </button>
+                    <button class="category-filter" data-category="creative">
+                        <i class="fas fa-palette"></i> Kreatif
+                    </button>
+                    <button class="category-filter" data-category="personal">
+                        <i class="fas fa-user"></i> Personal
+                    </button>
+                    <button class="category-filter" data-category="other">
+                        <i class="fas fa-ellipsis-h"></i> Lainnya
+                    </button>
                 </div>
                 
                 <div id="questList" class="quests-list"></div>
                 
                 <button class="btn-task" onclick="completeTask()">
-                    <span class="btn-icon">✨</span>
+                    <i class="fas fa-bolt"></i>
                     Selesaikan Tugas Cepat
                     <span class="btn-badge">+10 XP</span>
                 </button>
@@ -223,26 +280,42 @@
 
             <!-- Active Timers Overview -->
             <section class="active-timers-section" id="activeTimersSection">
-                <h3 class="section-title">⏰ Timer Aktif</h3>
+                <h3 class="section-title">
+                    <i class="fas fa-clock"></i> Timer Aktif
+                </h3>
                 <div id="activeTimersList" class="active-timers-list"></div>
             </section>
 
             <!-- Shop -->
             <section class="shop-section">
-                <h3 class="section-title">🛒 Toko Kerajaan</h3>
+                <h3 class="section-title">
+                    <i class="fas fa-store"></i> Toko Kerajaan
+                </h3>
                 <div id="shopItems" class="shop-items"></div>
             </section>
 
             <!-- Inventory -->
             <section class="inventory-section">
-                <h3 class="section-title">🎒 Inventory</h3>
+                <h3 class="section-title">
+                    <i class="fas fa-backpack"></i> Inventory
+                </h3>
                 <div id="inventoryItems" class="inventory-items"></div>
             </section>
 
             <!-- Navigation -->
             <nav class="game-nav">
-                <button class="btn-nav" onclick="showAchievements()">🏆 Pencapaian</button>
-                <button class="btn-nav btn-logout" onclick="logout()">🚪 Keluar</button>
+                <button class="btn-nav" onclick="showAchievements()">
+                    <i class="fas fa-trophy"></i> Pencapaian
+                </button>
+                <button class="btn-nav" onclick="showLeaderboard()">
+                    <i class="fas fa-medal"></i> Peringkat
+                </button>
+                <button class="btn-nav" onclick="showAnalytics()">
+                    <i class="fas fa-chart-line"></i> Analitik
+                </button>
+                <button class="btn-nav btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
             </nav>
         </div>
     </section>
@@ -251,7 +324,7 @@
     <div id="statsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>📊 Statistik Permainan</h3>
+                <h3><i class="fas fa-chart-bar"></i> Statistik Permainan</h3>
                 <button class="modal-close" onclick="closeStatsModal()">×</button>
             </div>
             <div class="modal-body">
@@ -280,6 +353,14 @@
                         <div class="stat-value" id="statTotalTime">0j</div>
                         <div class="stat-label">Total Waktu</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statProductivityScore">0</div>
+                        <div class="stat-label">Skor Produktivitas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statCurrentStreak">0</div>
+                        <div class="stat-label">Streak Aktif</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -289,11 +370,177 @@
     <div id="achievementsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🏆 Pencapaian</h3>
+                <h3><i class="fas fa-trophy"></i> Pencapaian</h3>
                 <button class="modal-close" onclick="closeAchievementsModal()">×</button>
             </div>
             <div class="modal-body">
                 <div id="achievementsList" class="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guild Modal -->
+    <div id="guildModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> Guild & Kolaborasi</h3>
+                <button class="modal-close" onclick="closeGuildModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="guildContent">
+                    <div class="guild-info" id="guildInfo">
+                        <p>Bergabunglah dengan guild untuk berkolaborasi dengan kesatria lain!</p>
+                        <button class="btn-primary" onclick="showCreateGuildModal()">
+                            <i class="fas fa-plus"></i> Buat Guild
+                        </button>
+                        <button class="btn-secondary" onclick="showJoinGuildModal()">
+                            <i class="fas fa-sign-in-alt"></i> Gabung Guild
+                        </button>
+                    </div>
+                    <div id="guildDetails" style="display: none;">
+                        <div class="guild-header">
+                            <h4 id="guildName">Nama Guild</h4>
+                            <span class="guild-level">Level <span id="guildLevel">1</span></span>
+                        </div>
+                        <div class="guild-members">
+                            <h5>Anggota Guild</h5>
+                            <div id="guildMembersList"></div>
+                        </div>
+                        <div class="guild-quests">
+                            <h5>Quest Guild</h5>
+                            <div id="guildQuestsList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Guild Modal -->
+    <div id="createGuildModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Buat Guild Baru</h3>
+                <button class="modal-close" onclick="closeCreateGuildModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="guildNameInput" placeholder="Nama Guild" class="form-input">
+                </div>
+                <div class="form-group">
+                    <textarea id="guildDescription" placeholder="Deskripsi Guild" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tipe Guild:</label>
+                    <select id="guildType" class="form-input">
+                        <option value="casual">Casual</option>
+                        <option value="competitive">Competitive</option>
+                        <option value="study">Study Focus</option>
+                        <option value="fitness">Fitness</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="createGuild()">
+                    <i class="fas fa-users"></i> Buat Guild (100 <i class="fas fa-coins"></i>)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div id="analyticsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-line"></i> Analitik Produktivitas</h3>
+                <button class="modal-close" onclick="closeAnalyticsModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="analytics-tabs">
+                    <button class="analytics-tab active" data-tab="daily">Harian</button>
+                    <button class="analytics-tab" data-tab="weekly">Mingguan</button>
+                    <button class="analytics-tab" data-tab="monthly">Bulanan</button>
+                </div>
+                <div id="analyticsContent">
+                    <div class="analytics-chart">
+                        <canvas id="productivityChart"></canvas>
+                    </div>
+                    <div class="analytics-stats">
+                        <div class="analytics-stat">
+                            <span class="stat-label">Waktu Produktif</span>
+                            <span class="stat-value" id="productiveTime">0j 0m</span>
+                        </div>
+                        <div class="analytics-stat">
+                            <span class="stat-label">Quest Diselesaikan</span>
+                            <span class="stat-value" id="completedQuests">0</span>
+                        </div>
+                        <div class="analytics-stat">
+                            <span class="stat-label">Skor Efisiensi</span>
+                            <span class="stat-value" id="efficiencyScore">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Quest Modal -->
+    <div id="createQuestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Buat Quest Kustom</h3>
+                <button class="modal-close" onclick="closeCreateQuestModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="text" id="customQuestTitle" placeholder="Judul Quest" class="form-input">
+                </div>
+                <div class="form-group">
+                    <textarea id="customQuestDescription" placeholder="Deskripsi Quest" class="form-input" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Kategori:</label>
+                    <select id="customQuestCategory" class="form-input">
+                        <option value="work">💼 Kerja</option>
+                        <option value="study">📚 Belajar</option>
+                        <option value="exercise">💪 Olahraga</option>
+                        <option value="creative">🎨 Kreatif</option>
+                        <option value="personal">👤 Personal</option>
+                        <option value="other">📝 Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Durasi (menit):</label>
+                    <input type="number" id="customQuestDuration" min="5" max="180" value="25" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>XP Reward:</label>
+                    <input type="number" id="customQuestXP" min="10" max="100" value="25" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Gold Reward:</label>
+                    <input type="number" id="customQuestGold" min="5" max="50" value="15" class="form-input">
+                </div>
+                <button class="btn-primary" onclick="createCustomQuest()">
+                    <i class="fas fa-plus"></i> Buat Quest (20 <i class="fas fa-coins"></i>)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-medal"></i> Papan Peringkat</h3>
+                <button class="modal-close" onclick="closeLeaderboardModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="leaderboard-tabs">
+                    <button class="leaderboard-tab active" data-category="level">Level</button>
+                    <button class="leaderboard-tab" data-category="xp">Total XP</button>
+                    <button class="leaderboard-tab" data-category="quests">Quest Selesai</button>
+                    <button class="leaderboard-tab" data-category="streak">Daily Streak</button>
+                </div>
+                <div id="leaderboardList" class="leaderboard-list"></div>
             </div>
         </div>
     </div>
@@ -315,14 +562,14 @@
     <div id="refreshQuestModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🔄 Refresh Quest</h3>
+                <h3><i class="fas fa-sync-alt"></i> Refresh Quest</h3>
                 <button class="modal-close" onclick="closeRefreshQuestModal()">×</button>
             </div>
             <div class="modal-body">
                 <p>Pilih quest yang ingin di-refresh:</p>
                 <div id="refreshQuestList" class="refresh-quest-list"></div>
                 <div class="refresh-cost">
-                    Biaya per quest: <strong>15 🪙</strong>
+                    Biaya per quest: <strong>15 <i class="fas fa-coins"></i></strong>
                 </div>
             </div>
         </div>
@@ -331,6 +578,7 @@
     <!-- Notification Container -->
     <div id="notificationContainer" class="notification-container"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
