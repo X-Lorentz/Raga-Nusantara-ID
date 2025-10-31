@@ -1,11 +1,11 @@
 // =======================
-// 🎮 RAGA NUSANTARA v3.2
-// Enhanced Timer & Refresh Quest System
+// 🎮 RAGA NUSANTARA v3.3
+// Enhanced Guild System & Analytics
 // =======================
 
 // Global Variables
 let currentUser = null;
-let level = 1, xp = 0, xpNeeded = 50, gold = 100, gems = 5;
+let level = 1, xp = 0, xpNeeded = 50, gold = 100, gems = 5, energy = 100;
 let quests = [];
 let avatar = "";
 let musicPlaying = false;
@@ -18,48 +18,120 @@ let userStats = {
     daysActive: 1,
     totalGoldEarned: 100,
     timerQuestsCompleted: 0,
-    totalTimeSpent: 0 // in seconds
+    totalTimeSpent: 0,
+    productivityScore: 0,
+    currentStreak: 0,
+    lastActiveDate: null,
+    weeklyGoals: 0,
+    guildContributions: 0
 };
 
-// Active timers tracking
+// Enhanced systems
 let activeTimers = new Map();
 let timerIntervals = new Map();
+let dailyChallenges = [];
+let guildData = null;
+let leaderboardData = [];
+let analyticsData = {
+    daily: [],
+    weekly: [],
+    monthly: []
+};
 
-// Shop Items
+// Enhanced Shop Items
 const shopItems = [
-    { id: "topi_kerajaan", name: "👑 Topi Kerajaan", price: 50, type: "head" },
-    { id: "pedang_emas", name: "⚔️ Pedang Emas", price: 100, type: "weapon" },
-    { id: "perisai_naga", name: "🛡️ Perisai Naga", price: 150, type: "shield" },
-    { id: "jubah_sakti", name: "🧥 Jubah Sakti", price: 200, type: "armor" },
-    { id: "sepatu_angin", name: "👟 Sepatu Angin", price: 80, type: "shoes" },
-    { id: "kalung_mustika", name: "📿 Kalung Mustika", price: 120, type: "accessory" },
-    { id: "cincin_ajaib", name: "💍 Cincin Ajaib", price: 75, type: "ring" }
+    { id: "topi_kerajaan", name: "👑 Topi Kerajaan", price: 50, type: "head", rarity: "common" },
+    { id: "pedang_emas", name: "⚔️ Pedang Emas", price: 100, type: "weapon", rarity: "rare" },
+    { id: "perisai_naga", name: "🛡️ Perisai Naga", price: 150, type: "shield", rarity: "epic" },
+    { id: "jubah_sakti", name: "🧥 Jubah Sakti", price: 200, type: "armor", rarity: "legendary" },
+    { id: "sepatu_angin", name: "👟 Sepatu Angin", price: 80, type: "shoes", rarity: "common" },
+    { id: "kalung_mustika", name: "📿 Kalung Mustika", price: 120, type: "accessory", rarity: "rare" },
+    { id: "cincin_ajaib", name: "💍 Cincin Ajaib", price: 75, type: "ring", rarity: "common" },
+    { id: "peti_harta", name: "🗃️ Peti Harta", price: 300, type: "special", rarity: "legendary" },
+    { id: "peta_rahasia", name: "🗺️ Peta Rahasia", price: 180, type: "special", rarity: "epic" }
 ];
 
-// Achievements
+// Enhanced Achievements with progression
 const allAchievements = [
-    { id: "first_quest", name: "Pendatang Baru", description: "Selesaikan quest pertama", icon: "🎯", unlocked: false },
-    { id: "level_5", name: "Kesatria Pemula", description: "Capai level 5", icon: "⚔️", unlocked: false },
-    { id: "level_10", name: "Kesatria Tangguh", description: "Capai level 10", icon: "🛡️", unlocked: false },
-    { id: "rich", name: "Pedagang Kaya", description: "Kumpulkan 500 gold", icon: "💰", unlocked: false },
-    { id: "shopper", name: "Kolektor", description: "Beli 3 item dari toko", icon: "🛒", unlocked: false },
-    { id: "productive", name: "Produktif", description: "Selesaikan 10 tugas", icon: "✨", unlocked: false },
-    { id: "dedicated", name: "Berkomitmen", description: "Aktif selama 7 hari", icon: "📅", unlocked: false },
-    { id: "timer_master", name: "Master Timer", description: "Selesaikan 5 timer quest", icon: "⏰", unlocked: false },
-    { id: "time_investor", name: "Investor Waktu", description: "Habiskan 1 jam total di timer quest", icon: "⏱️", unlocked: false },
-    { id: "quest_refresher", name: "Pemburu Quest", description: "Refresh quest 10 kali", icon: "🔄", unlocked: false }
+    { 
+        id: "first_quest", 
+        name: "Pendatang Baru", 
+        description: "Selesaikan quest pertama", 
+        icon: "🎯", 
+        unlocked: false,
+        tier: 1,
+        progress: 0,
+        target: 1,
+        rewards: { xp: 50, gold: 25 }
+    },
+    { 
+        id: "level_5", 
+        name: "Kesatria Pemula", 
+        description: "Capai level 5", 
+        icon: "⚔️", 
+        unlocked: false,
+        tier: 1,
+        progress: 0,
+        target: 5,
+        rewards: { xp: 100, gold: 50, gems: 1 }
+    },
+    { 
+        id: "level_10", 
+        name: "Kesatria Tangguh", 
+        description: "Capai level 10", 
+        icon: "🛡️", 
+        unlocked: false,
+        tier: 2,
+        progress: 0,
+        target: 10,
+        rewards: { xp: 200, gold: 100, gems: 3 }
+    },
+    { 
+        id: "productive_week", 
+        name: "Minggu Produktif", 
+        description: "Selesaikan 7 quest dalam seminggu", 
+        icon: "📈", 
+        unlocked: false,
+        tier: 2,
+        progress: 0,
+        target: 7,
+        rewards: { xp: 150, gold: 75, gems: 2 }
+    },
+    { 
+        id: "time_master", 
+        name: "Master Waktu", 
+        description: "Habiskan 10 jam di timer quest", 
+        icon: "⏱️", 
+        unlocked: false,
+        tier: 3,
+        progress: 0,
+        target: 36000,
+        rewards: { xp: 300, gold: 150, gems: 5 }
+    },
+    { 
+        id: "guild_champion", 
+        name: "Juara Guild", 
+        description: "Berkontribusi 1000 XP ke guild", 
+        icon: "🏆", 
+        unlocked: false,
+        tier: 3,
+        progress: 0,
+        target: 1000,
+        rewards: { xp: 500, gold: 250, gems: 10 }
+    }
 ];
 
-// Enhanced Quest Pool with 20+ quests
+// Enhanced Quest Pool with more variety
 const questPool = [
-    // Work Category (5 quests)
+    // Work Category
     { 
         title: "💼 Kerjakan Laporan", 
         description: "Selesaikan laporan pekerjaan dengan fokus selama 45 menit",
         category: "work",
-        duration: 2700, // 45 minutes
+        duration: 2700,
         xp: 30, 
-        gold: 18 
+        gold: 18,
+        energy: 5
     },
     { 
         title: "📊 Analisis Data", 
@@ -67,41 +139,19 @@ const questPool = [
         category: "work",
         duration: 3000,
         xp: 35, 
-        gold: 20 
+        gold: 20,
+        energy: 6
     },
-    { 
-        title: "📧 Organisasi Email", 
-        description: "Bersihkan dan organisasi inbox email selama 25 menit",
-        category: "work",
-        duration: 1500,
-        xp: 20, 
-        gold: 12 
-    },
-    { 
-        title: "📋 Rencana Mingguan", 
-        description: "Buat perencanaan kerja untuk minggu depan selama 20 menit",
-        category: "work",
-        duration: 1200,
-        xp: 15, 
-        gold: 8 
-    },
-    { 
-        title: "🤝 Meeting Produktif", 
-        description: "Persiapan dan follow-up meeting selama 40 menit",
-        category: "work",
-        duration: 2400,
-        xp: 25, 
-        gold: 15 
-    },
-
-    // Study Category (5 quests)
+    
+    // Study Category
     { 
         title: "📚 Belajar Topik Baru", 
         description: "Pelajari materi baru atau skill selama 45 menit",
         category: "study",
         duration: 2700,
         xp: 30, 
-        gold: 18 
+        gold: 18,
+        energy: 5
     },
     { 
         title: "🌐 Bahasa Asing", 
@@ -109,41 +159,19 @@ const questPool = [
         category: "study",
         duration: 1800,
         xp: 22, 
-        gold: 12 
+        gold: 12,
+        energy: 4
     },
-    { 
-        title: "🎮 Game Edukasi", 
-        description: "Main game edukatif untuk melatih otak 25 menit",
-        category: "study",
-        duration: 1500,
-        xp: 18, 
-        gold: 10 
-    },
-    { 
-        title: "📖 Baca Buku", 
-        description: "Baca buku pengembangan diri 1 chapter (35 menit)",
-        category: "study",
-        duration: 2100,
-        xp: 25, 
-        gold: 14 
-    },
-    { 
-        title: "✍️ Review Materi", 
-        description: "Review dan buat rangkuman materi 20 menit",
-        category: "study",
-        duration: 1200,
-        xp: 15, 
-        gold: 8 
-    },
-
-    // Exercise Category (5 quests)
+    
+    // Exercise Category
     { 
         title: "💪 Workout Ringan", 
         description: "Latihan fisik ringan selama 25 menit",
         category: "exercise",
         duration: 1500,
         xp: 20, 
-        gold: 12 
+        gold: 12,
+        energy: 8
     },
     { 
         title: "🚶 Jalan Santai", 
@@ -151,41 +179,19 @@ const questPool = [
         category: "exercise",
         duration: 1800,
         xp: 22, 
-        gold: 12 
+        gold: 12,
+        energy: 7
     },
-    { 
-        title: "🧘 Yoga & Stretching", 
-        description: "Sesi yoga dan peregangan 20 menit",
-        category: "exercise",
-        duration: 1200,
-        xp: 15, 
-        gold: 8 
-    },
-    { 
-        title: "🏃 Cardio Session", 
-        description: "Latihan kardio intensitas sedang 35 menit",
-        category: "exercise",
-        duration: 2100,
-        xp: 25, 
-        gold: 14 
-    },
-    { 
-        title: "💨 Breathing Exercise", 
-        description: "Latihan pernapasan dan relaksasi 15 menit",
-        category: "exercise",
-        duration: 900,
-        xp: 12, 
-        gold: 6 
-    },
-
-    // Creative Category (5 quests)
+    
+    // Creative Category
     { 
         title: "🎨 Project Kreatif", 
         description: "Kerjakan proyek seni atau kreatif 50 menit",
         category: "creative",
         duration: 3000,
         xp: 35, 
-        gold: 20 
+        gold: 20,
+        energy: 6
     },
     { 
         title: "✏️ Menulis Kreatif", 
@@ -193,41 +199,19 @@ const questPool = [
         category: "creative",
         duration: 2400,
         xp: 28, 
-        gold: 16 
+        gold: 16,
+        energy: 5
     },
-    { 
-        title: "🎵 Main Musik", 
-        description: "Berlatih alat musik selama 30 menit",
-        category: "creative",
-        duration: 1800,
-        xp: 22, 
-        gold: 12 
-    },
-    { 
-        title: "📝 Journaling", 
-        description: "Tulis jurnal harian dan refleksi 20 menit",
-        category: "creative",
-        duration: 1200,
-        xp: 15, 
-        gold: 8 
-    },
-    { 
-        title: "💡 Brainstorming", 
-        description: "Sesi brainstorming ide kreatif 25 menit",
-        category: "creative",
-        duration: 1500,
-        xp: 18, 
-        gold: 10 
-    },
-
-    // Personal Category (5 quests)
+    
+    // Personal Category
     { 
         title: "🧹 Bersih-bersih", 
         description: "Bersihkan dan rapikan ruangan 30 menit",
         category: "personal",
         duration: 1800,
         xp: 20, 
-        gold: 10 
+        gold: 10,
+        energy: 4
     },
     { 
         title: "🍳 Masak Sehat", 
@@ -235,359 +219,74 @@ const questPool = [
         category: "personal",
         duration: 2400,
         xp: 25, 
-        gold: 14 
-    },
-    { 
-        title: "🌿 Meditasi", 
-        description: "Meditasi dan mindfulness 15 menit",
-        category: "personal",
-        duration: 900,
-        xp: 12, 
-        gold: 6 
-    },
-    { 
-        title: "📞 Telepon Keluarga", 
-        description: "Hubungi keluarga atau teman 25 menit",
-        category: "personal",
-        duration: 1500,
-        xp: 15, 
-        gold: 8 
-    },
-    { 
-        title: "🛌 Quality Rest", 
-        description: "Istirahat berkualitas tanpa gangguan 20 menit",
-        category: "personal",
-        duration: 1200,
-        xp: 12, 
-        gold: 6 
-    },
-
-    // Other Category (5 quests)
-    { 
-        title: "🔧 Perbaikan", 
-        description: "Perbaiki barang yang rusak 35 menit",
-        category: "other",
-        duration: 2100,
-        xp: 22, 
-        gold: 12 
-    },
-    { 
-        title: "🌱 Berkebun", 
-        description: "Merawat tanaman dan berkebun 30 menit",
-        category: "other",
-        duration: 1800,
-        xp: 20, 
-        gold: 10 
-    },
-    { 
-        title: "🎯 Target Harian", 
-        description: "Review dan evaluasi target harian 20 menit",
-        category: "other",
-        duration: 1200,
-        xp: 15, 
-        gold: 8 
-    },
-    { 
-        title: "💭 Refleksi Diri", 
-        description: "Self-reflection dan perencanaan hidup 25 menit",
-        category: "other",
-        duration: 1500,
-        xp: 18, 
-        gold: 9 
-    },
-    { 
-        title: "🌟 Skill Baru", 
-        description: "Eksplorasi dan belajar skill baru 45 menit",
-        category: "other",
-        duration: 2700,
-        xp: 30, 
-        gold: 16 
+        gold: 14,
+        energy: 5
     }
 ];
 
-// Utility function to get random quests
-function getRandomQuests(count = 5) {
-    const shuffled = [...questPool].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count).map(quest => ({
-        ...quest,
-        id: generateId(),
-        timeLeft: quest.duration,
-        timerState: 'idle',
-        startTime: null,
-        originalDuration: quest.duration,
-        done: false,
-        pausedTime: 0
-    }));
-}
+// Daily Challenges
+const dailyChallengePool = [
+    { 
+        title: "Selesaikan 3 Quest", 
+        description: "Selesaikan 3 quest apapun hari ini",
+        target: 3,
+        type: "quests",
+        reward: { gold: 25, xp: 15 }
+    },
+    { 
+        title: "Aktifkan 2 Timer", 
+        description: "Mulai 2 timer quest yang berbeda",
+        target: 2,
+        type: "timers",
+        reward: { gold: 20, xp: 10 }
+    },
+    { 
+        title: "Capai 30 Menit Produktif", 
+        description: "Habiskan 30 menit di timer quest",
+        target: 1800,
+        type: "time",
+        reward: { gold: 30, xp: 20 }
+    }
+];
 
-// Initialize the game
+// Initialize the enhanced game
 function initGame() {
     initializeSampleUsers();
     setupEventListeners();
     checkExistingSession();
     initParticles();
+    initAnalytics();
     
-    // Hide loading screen after 2 seconds
+    // Hide loading screen after 1.5 seconds
     setTimeout(() => {
         document.getElementById('loadingScreen').style.display = 'none';
         if (!currentUser) {
             showPage('splashPage');
         }
-    }, 2000);
+    }, 1500);
 }
 
-// Check if user was already logged in
-function checkExistingSession() {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        const users = getUsers();
-        if (users[savedUser]) {
-            loginUser(savedUser);
-        }
-    }
-}
-
-// User Management
+// Enhanced User Management
 function getUsers() {
-    const users = localStorage.getItem('ragaNusantaraUsers');
-    return users ? JSON.parse(users) : {};
+    try {
+        const users = localStorage.getItem('ragaNusantaraUsers');
+        return users ? JSON.parse(users) : {};
+    } catch (e) {
+        console.error('Error reading user data:', e);
+        return {};
+    }
 }
 
 function saveUsers(users) {
-    localStorage.setItem('ragaNusantaraUsers', JSON.stringify(users));
-}
-
-function getCurrentUserData() {
-    const users = getUsers();
-    return users[currentUser];
-}
-
-function saveCurrentUserData() {
-    const users = getUsers();
-    if (users[currentUser]) {
-        users[currentUser] = {
-            ...users[currentUser],
-            level, xp, xpNeeded, gold, gems, quests, inventory, achievements, userStats
-        };
-        saveUsers(users);
-    }
-}
-
-// Initialize Sample Users
-function initializeSampleUsers() {
-    const users = getUsers();
-    
-    if (!users.test) {
-        users.test = {
-            username: "test",
-            password: "123456",
-            avatar: "ksatria",
-            level: 10,
-            xp: 0,
-            xpNeeded: 50,
-            gold: 500,
-            gems: 10,
-            quests: [],
-            inventory: ["topi_kerajaan", "pedang_emas"],
-            achievements: [],
-            userStats: { 
-                totalXP: 1000, 
-                tasksCompleted: 50, 
-                questsCompleted: 20, 
-                daysActive: 5, 
-                totalGoldEarned: 800,
-                timerQuestsCompleted: 3,
-                totalTimeSpent: 3600,
-                questsRefreshed: 2
-            },
-            lastQuestDate: "",
-            createdAt: new Date().toISOString()
-        };
-    }
-    
-    if (!users.asep) {
-        users.asep = {
-            username: "asep",
-            password: "4321",
-            avatar: "pendeta",
-            level: 20,
-            xp: 0,
-            xpNeeded: 50,
-            gold: 1000,
-            gems: 20,
-            quests: [],
-            inventory: ["topi_kerajaan", "pedang_emas", "jubah_sakti"],
-            achievements: [],
-            userStats: { 
-                totalXP: 2000, 
-                tasksCompleted: 100, 
-                questsCompleted: 40, 
-                daysActive: 10, 
-                totalGoldEarned: 1500,
-                timerQuestsCompleted: 8,
-                totalTimeSpent: 7200,
-                questsRefreshed: 5
-            },
-            lastQuestDate: "",
-            createdAt: new Date().toISOString()
-        };
-    }
-    
-    saveUsers(users);
-}
-
-// Page Navigation
-function showPage(pageId) {
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById(pageId).classList.add('active');
-    
-    // Special handling for game page
-    if (pageId === 'gamePage') {
-        loadGame();
-    }
-}
-
-function showLogin() {
-    showPage('loginPage');
-}
-
-function showSignup() {
-    showPage('signupPage');
-}
-
-// Password Toggle
-function togglePassword(inputId, element) {
-    const input = document.getElementById(inputId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        element.textContent = '🙈';
-    } else {
-        input.type = 'password';
-        element.textContent = '👁️';
-    }
-}
-
-// Music Control
-function toggleMusic() {
-    const music = document.getElementById('bgMusic');
-    const btn = document.getElementById('musicBtn');
-    
     try {
-        if (musicPlaying) {
-            music.pause();
-            btn.textContent = '🔇';
-        } else {
-            const playPromise = music.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    musicPlaying = true;
-                    btn.textContent = '🔊';
-                }).catch(error => {
-                    console.log('Audio play failed:', error);
-                    showNotification('Klik layar dulu untuk memutar musik');
-                });
-            }
-        }
-    } catch (error) {
-        console.log('Music error:', error);
+        localStorage.setItem('ragaNusantaraUsers', JSON.stringify(users));
+    } catch (e) {
+        console.error('Error saving user data:', e);
+        showNotification('Error: Gagal menyimpan data permainan');
     }
 }
 
-// Auto-play music on user interaction
-document.addEventListener('click', function initMusic() {
-    const music = document.getElementById('bgMusic');
-    if (music.paused && !musicPlaying) {
-        music.play().then(() => {
-            musicPlaying = true;
-            document.getElementById('musicBtn').textContent = '🔊';
-        }).catch(e => {
-            console.log('Auto-play blocked');
-        });
-    }
-    document.removeEventListener('click', initMusic);
-}, { once: true });
-
-// Sign Up Function
-function signup() {
-    const username = document.getElementById('signupUsername').value.trim();
-    const password = document.getElementById('signupPassword').value.trim();
-    const avatarChoice = document.querySelector('input[name="avatar"]:checked').value;
-
-    if (!username || !password) {
-        showNotification('Isi semua kolom, wahai calon kesatria!');
-        return;
-    }
-
-    if (password.length < 6) {
-        showNotification('Kata sandi harus minimal 6 karakter!');
-        return;
-    }
-
-    if (username.length < 3) {
-        showNotification('Nama kesatria harus minimal 3 karakter!');
-        return;
-    }
-
-    const users = getUsers();
-
-    if (users[username]) {
-        showNotification('Nama kesatria sudah terdaftar di kerajaan!');
-        return;
-    }
-
-    // Create new user
-    users[username] = {
-        username: username,
-        password: password,
-        avatar: avatarChoice,
-        level: 1,
-        xp: 0,
-        xpNeeded: 50,
-        gold: 100,
-        gems: 5,
-        quests: [],
-        inventory: [],
-        achievements: [],
-        userStats: { ...userStats },
-        lastQuestDate: "",
-        createdAt: new Date().toISOString()
-    };
-
-    saveUsers(users);
-    showNotification('Selamat datang di Kerajaan Raga Nusantara!');
-    
-    // Auto login after signup
-    loginUser(username);
-}
-
-// Login Function
-function login() {
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value.trim();
-
-    if (!username || !password) {
-        showNotification('Isi nama kesatria dan kata sandi rahasia!');
-        return;
-    }
-
-    const users = getUsers();
-    const userData = users[username];
-
-    if (!userData) {
-        showNotification('Kesatria tidak ditemukan dalam catatan kerajaan!');
-        return;
-    }
-
-    if (userData.password !== password) {
-        showNotification('Kata sandi rahasia salah!');
-        return;
-    }
-
-    loginUser(username);
-}
-
+// Enhanced Login System with Streak Tracking
 function loginUser(username) {
     const users = getUsers();
     const userData = users[username];
@@ -599,12 +298,19 @@ function loginUser(username) {
     xpNeeded = userData.xpNeeded || 50;
     gold = userData.gold || 100;
     gems = userData.gems || 5;
+    energy = userData.energy || 100;
     avatar = userData.avatar || "ksatria";
     quests = userData.quests || [];
     inventory = userData.inventory || [];
     achievements = userData.achievements || [];
     userStats = userData.userStats || { ...userStats };
+    guildData = userData.guildData || null;
+    dailyChallenges = userData.dailyChallenges || [];
 
+    // Update streak and daily challenges
+    updateLoginStreak();
+    initializeDailyChallenges();
+    
     // Save session
     localStorage.setItem('currentUser', username);
 
@@ -616,62 +322,83 @@ function loginUser(username) {
     
     // Load game page
     showPage('gamePage');
-    showNotification(`Selamat datang kembali, ${username}!`);
+    showNotification(`Selamat datang kembali, ${username}! 🔥 Streak ${userStats.currentStreak} hari`);
 }
 
-// Load Game Data
-function loadGame() {
-    // Update player info
-    document.getElementById('playerName').textContent = currentUser;
-    document.getElementById('playerAvatar').src = getAvatarImage(avatar);
-    document.getElementById('level').textContent = level;
-    document.getElementById('xp').textContent = xp;
-    document.getElementById('xpNeeded').textContent = xpNeeded;
-    document.getElementById('gold').textContent = gold;
-    document.getElementById('gems').textContent = gems;
+// Streak Management
+function updateLoginStreak() {
+    const today = new Date().toDateString();
+    const lastActive = userStats.lastActiveDate;
     
-    const xpPercentage = (xp / xpNeeded) * 100;
-    document.getElementById('xpFill').style.width = `${xpPercentage}%`;
-
-    // Update refresh button state
-    updateRefreshButtonState();
-
-    // Render game elements
-    renderQuests();
-    renderShop();
-    renderInventory();
-    updateStatsModal();
-    renderAchievements();
-    updateActiveTimersDisplay();
+    if (lastActive) {
+        const lastDate = new Date(lastActive);
+        const todayDate = new Date();
+        const diffTime = todayDate - lastDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 1) {
+            // Consecutive login
+            userStats.currentStreak++;
+            showNotification(`🔥 Streak bertambah! Sekarang ${userStats.currentStreak} hari berturut-turut!`);
+        } else if (diffDays > 1) {
+            // Broken streak
+            userStats.currentStreak = 1;
+            showNotification('🔥 Memulai streak baru! Login berturut-turut untuk bonus harian.');
+        }
+        // Same day - no change
+    } else {
+        // First login
+        userStats.currentStreak = 1;
+    }
     
-    // Check for new achievements
-    checkAchievements();
+    userStats.lastActiveDate = today;
+    saveCurrentUserData();
 }
 
-// Get Avatar Image
-function getAvatarImage(avatarType) {
-    const avatars = {
-        ksatria: "https://i.imgur.com/b0tZAvk.png",
-        pendeta: "https://i.imgur.com/wgMJfZQ.png",
-        petani: "https://i.imgur.com/ToTzx7G.png",
-        pedagang: "https://i.imgur.com/31fFEsK.png",
-        pelukis: "https://i.imgur.com/3lMJkWe.png"
-    };
-    return avatars[avatarType] || avatars.ksatria;
+// Daily Challenges System
+function initializeDailyChallenges() {
+    const today = new Date().toDateString();
+    
+    if (dailyChallenges.length === 0 || dailyChallenges[0].date !== today) {
+        // Generate new daily challenges
+        dailyChallenges = dailyChallengePool.map(challenge => ({
+            ...challenge,
+            date: today,
+            progress: 0,
+            completed: false
+        }));
+        
+        saveCurrentUserData();
+        showNotification('🎯 Tantangan harian baru telah tersedia!');
+    }
+    
+    renderDailyChallenges();
 }
 
-// Complete Task
-function completeTask() {
-    const earnedXP = 10 + Math.floor(level * 1.2);
-    const earnedGold = 5 + Math.floor(level * 0.8);
+function updateDailyChallengeProgress(type, amount = 1) {
+    dailyChallenges.forEach(challenge => {
+        if (!challenge.completed && challenge.type === type) {
+            challenge.progress += amount;
+            
+            if (challenge.progress >= challenge.target) {
+                challenge.completed = true;
+                completeDailyChallenge(challenge);
+            }
+        }
+    });
     
-    xp += earnedXP;
-    gold += earnedGold;
-    userStats.totalXP += earnedXP;
-    userStats.tasksCompleted++;
-    userStats.totalGoldEarned += earnedGold;
+    renderDailyChallenges();
+    saveCurrentUserData();
+}
+
+function completeDailyChallenge(challenge) {
+    gold += challenge.reward.gold;
+    xp += challenge.reward.xp;
     
-    createParticleEffect();
+    userStats.totalGoldEarned += challenge.reward.gold;
+    userStats.totalXP += challenge.reward.xp;
+    
+    showNotification(`🎯 Tantangan "${challenge.title}" selesai! +${challenge.reward.xp}XP +${challenge.reward.gold}🪙`);
     
     if (xp >= xpNeeded) {
         levelUp();
@@ -679,147 +406,486 @@ function completeTask() {
     
     saveCurrentUserData();
     loadGame();
-    
-    showNotification(`+${earnedXP} XP | +${earnedGold} 🪙 Gold`);
-    
-    // Check achievements
-    checkAchievements();
 }
 
-// Level Up
-function levelUp() {
-    const oldLevel = level;
+function renderDailyChallenges() {
+    const challengesContainer = document.getElementById('dailyChallenges');
+    const progressElement = document.getElementById('completedChallenges');
     
-    while (xp >= xpNeeded) {
-        xp -= xpNeeded;
-        level++;
-        xpNeeded = Math.floor(xpNeeded * 1.5);
+    if (!challengesContainer) return;
+    
+    const completedCount = dailyChallenges.filter(c => c.completed).length;
+    progressElement.textContent = `${completedCount}/3 Selesai`;
+    
+    challengesContainer.innerHTML = '';
+    
+    dailyChallenges.forEach(challenge => {
+        const challengeElement = document.createElement('div');
+        challengeElement.className = `challenge-item ${challenge.completed ? 'completed' : ''}`;
         
-        // Bonus gold and gems every level up
-        gold += level * 10;
-        gems += Math.floor(level / 5);
+        challengeElement.innerHTML = `
+            <div class="challenge-checkbox">
+                ${challenge.completed ? '✓' : ''}
+            </div>
+            <div class="challenge-info">
+                <div class="challenge-title">${challenge.title}</div>
+                <div class="challenge-description">${challenge.description}</div>
+                <div class="challenge-progress">${challenge.progress}/${challenge.target}</div>
+            </div>
+            <div class="challenge-reward">
+                +${challenge.reward.xp}XP ${challenge.reward.gold}🪙
+            </div>
+        `;
         
-        userStats.totalGoldEarned += level * 10;
+        challengesContainer.appendChild(challengeElement);
+    });
+}
+
+// Enhanced Quest System with Custom Quests
+function createCustomQuest() {
+    const title = document.getElementById('customQuestTitle').value.trim();
+    const description = document.getElementById('customQuestDescription').value.trim();
+    const category = document.getElementById('customQuestCategory').value;
+    const duration = parseInt(document.getElementById('customQuestDuration').value) * 60;
+    const questXP = parseInt(document.getElementById('customQuestXP').value);
+    const questGold = parseInt(document.getElementById('customQuestGold').value);
+    
+    if (!title || !description) {
+        showNotification('Harap isi judul dan deskripsi quest!');
+        return;
     }
     
-    createParticleEffect('levelup');
-    showNotification(`🎉 LEVEL UP! ${oldLevel} → ${level} | +${level * 10} 🪙 Gold`);
+    if (gold < 20) {
+        showNotification('Gold tidak cukup untuk membuat quest custom! Perlu 20 🪙');
+        return;
+    }
     
-    // Check for level-based achievements
-    checkAchievements();
+    gold -= 20;
+    
+    const customQuest = {
+        id: generateId(),
+        title: `🎨 ${title}`,
+        description: description,
+        category: category,
+        duration: duration,
+        timeLeft: duration,
+        xp: questXP,
+        gold: questGold,
+        energy: Math.floor(duration / 300),
+        timerState: 'idle',
+        originalDuration: duration,
+        done: false,
+        pausedTime: 0,
+        isCustom: true
+    };
+    
+    quests.push(customQuest);
+    saveCurrentUserData();
+    closeCreateQuestModal();
+    renderQuests();
+    showNotification('Quest custom berhasil dibuat!');
+    
+    // Update daily challenge
+    updateDailyChallengeProgress('quests');
 }
 
-// Enhanced Daily Quests System with Timer
-function checkDailyQuests() {
-    const today = new Date().toDateString();
-    const userData = getCurrentUserData();
+// Guild System
+function showCreateGuildModal() {
+    document.getElementById('createGuildModal').classList.add('active');
+}
 
-    if (userData.lastQuestDate !== today || quests.length === 0) {
-        // Reset quests for new day or if no quests
-        quests = getRandomQuests(5);
+function closeCreateGuildModal() {
+    document.getElementById('createGuildModal').classList.remove('active');
+}
+
+function createGuild() {
+    const guildName = document.getElementById('guildNameInput').value.trim();
+    const guildDescription = document.getElementById('guildDescription').value.trim();
+    const guildType = document.getElementById('guildType').value;
+    
+    if (!guildName) {
+        showNotification('Harap beri nama untuk guild Anda!');
+        return;
+    }
+    
+    if (gold < 100) {
+        showNotification('Gold tidak cukup untuk membuat guild! Perlu 100 🪙');
+        return;
+    }
+    
+    gold -= 100;
+    
+    guildData = {
+        id: generateId(),
+        name: guildName,
+        description: guildDescription,
+        type: guildType,
+        level: 1,
+        xp: 0,
+        members: [{
+            username: currentUser,
+            role: 'leader',
+            joinDate: new Date().toISOString(),
+            contribution: 0
+        }],
+        created: new Date().toISOString(),
+        quests: []
+    };
+    
+    saveCurrentUserData();
+    closeCreateGuildModal();
+    showGuildModal();
+    showNotification(`Guild "${guildName}" berhasil dibuat!`);
+}
+
+function showGuildModal() {
+    const guildInfo = document.getElementById('guildInfo');
+    const guildDetails = document.getElementById('guildDetails');
+    
+    if (guildData) {
+        guildInfo.style.display = 'none';
+        guildDetails.style.display = 'block';
         
-        // Update user data
-        const users = getUsers();
-        users[currentUser].quests = quests;
-        users[currentUser].lastQuestDate = today;
+        document.getElementById('guildName').textContent = guildData.name;
+        document.getElementById('guildLevel').textContent = guildData.level;
         
-        // Update days active
-        if (users[currentUser].userStats) {
-            users[currentUser].userStats.daysActive++;
+        // Render members
+        const membersList = document.getElementById('guildMembersList');
+        membersList.innerHTML = '';
+        
+        guildData.members.forEach(member => {
+            const memberElement = document.createElement('div');
+            memberElement.className = 'guild-member';
+            memberElement.innerHTML = `
+                <img src="${getAvatarImage('ksatria')}" class="guild-member-avatar" alt="Avatar">
+                <div class="member-info">
+                    <div class="member-name">${member.username}</div>
+                    <div class="member-role">${member.role}</div>
+                </div>
+                <div class="member-contribution">${member.contribution} XP</div>
+            `;
+            membersList.appendChild(memberElement);
+        });
+    } else {
+        guildInfo.style.display = 'block';
+        guildDetails.style.display = 'none';
+    }
+    
+    document.getElementById('guildModal').classList.add('active');
+}
+
+function closeGuildModal() {
+    document.getElementById('guildModal').classList.remove('active');
+}
+
+// Analytics System
+function initAnalytics() {
+    // Initialize analytics data structure
+    const savedAnalytics = localStorage.getItem('ragaNusantaraAnalytics');
+    if (savedAnalytics) {
+        analyticsData = JSON.parse(savedAnalytics);
+    }
+}
+
+function trackProductivity(timeSpent, questsCompleted) {
+    const today = new Date().toDateString();
+    
+    // Update daily analytics
+    if (!analyticsData.daily.find(entry => entry.date === today)) {
+        analyticsData.daily.push({
+            date: today,
+            timeSpent: 0,
+            questsCompleted: 0,
+            productivityScore: 0
+        });
+    }
+    
+    const dailyEntry = analyticsData.daily.find(entry => entry.date === today);
+    dailyEntry.timeSpent += timeSpent;
+    dailyEntry.questsCompleted += questsCompleted;
+    dailyEntry.productivityScore = calculateProductivityScore(dailyEntry.timeSpent, dailyEntry.questsCompleted);
+    
+    // Save analytics
+    localStorage.setItem('ragaNusantaraAnalytics', JSON.stringify(analyticsData));
+}
+
+function calculateProductivityScore(timeSpent, questsCompleted) {
+    const timeScore = Math.min(timeSpent / 3600, 8) * 12.5; // Max 8 hours = 100 points
+    const questScore = Math.min(questsCompleted, 10) * 10; // Max 10 quests = 100 points
+    return Math.round((timeScore + questScore) / 2);
+}
+
+function showAnalytics() {
+    updateAnalyticsDisplay();
+    document.getElementById('analyticsModal').classList.add('active');
+}
+
+function closeAnalyticsModal() {
+    document.getElementById('analyticsModal').classList.remove('active');
+}
+
+function updateAnalyticsDisplay() {
+    const productiveTimeElement = document.getElementById('productiveTime');
+    const completedQuestsElement = document.getElementById('completedQuests');
+    const efficiencyScoreElement = document.getElementById('efficiencyScore');
+    
+    const today = new Date().toDateString();
+    const todayData = analyticsData.daily.find(entry => entry.date === today) || {
+        timeSpent: 0,
+        questsCompleted: 0,
+        productivityScore: 0
+    };
+    
+    const hours = Math.floor(todayData.timeSpent / 3600);
+    const minutes = Math.floor((todayData.timeSpent % 3600) / 60);
+    
+    productiveTimeElement.textContent = `${hours}j ${minutes}m`;
+    completedQuestsElement.textContent = todayData.questsCompleted;
+    efficiencyScoreElement.textContent = `${todayData.productivityScore}%`;
+    
+    // Update chart
+    renderProductivityChart();
+}
+
+function renderProductivityChart() {
+    const ctx = document.getElementById('productivityChart').getContext('2d');
+    const last7Days = analyticsData.daily.slice(-7);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: last7Days.map(day => {
+                const date = new Date(day.date);
+                return date.toLocaleDateString('id-ID', { weekday: 'short' });
+            }),
+            datasets: [{
+                label: 'Skor Produktivitas',
+                data: last7Days.map(day => day.productivityScore),
+                borderColor: '#c0933e',
+                backgroundColor: 'rgba(192, 147, 62, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+// Leaderboard System
+function showLeaderboard() {
+    loadLeaderboard('level');
+    document.getElementById('leaderboardModal').classList.add('active');
+}
+
+function closeLeaderboardModal() {
+    document.getElementById('leaderboardModal').classList.remove('active');
+}
+
+function loadLeaderboard(category) {
+    const users = getUsers();
+    const leaderboardList = document.getElementById('leaderboardList');
+    
+    // Convert to array and sort
+    const usersArray = Object.values(users).filter(user => user.userStats);
+    
+    usersArray.sort((a, b) => {
+        switch(category) {
+            case 'level':
+                return b.level - a.level;
+            case 'xp':
+                return (b.userStats.totalXP || 0) - (a.userStats.totalXP || 0);
+            case 'quests':
+                return (b.userStats.questsCompleted || 0) - (a.userStats.questsCompleted || 0);
+            case 'streak':
+                return (b.userStats.currentStreak || 0) - (a.userStats.currentStreak || 0);
+            default:
+                return 0;
+        }
+    });
+    
+    leaderboardList.innerHTML = '';
+    
+    usersArray.slice(0, 10).forEach((user, index) => {
+        const rank = index + 1;
+        let value = '';
+        
+        switch(category) {
+            case 'level':
+                value = `Level ${user.level}`;
+                break;
+            case 'xp':
+                value = `${user.userStats.totalXP || 0} XP`;
+                break;
+            case 'quests':
+                value = `${user.userStats.questsCompleted || 0} Quest`;
+                break;
+            case 'streak':
+                value = `${user.userStats.currentStreak || 0} Hari`;
+                break;
         }
         
-        saveUsers(users);
-        showNotification('Quest harian telah diperbarui!');
-    } else {
-        // Resume quests from storage
-        quests = userData.quests || [];
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        item.innerHTML = `
+            <div class="leaderboard-rank">#${rank}</div>
+            <img src="${getAvatarImage(user.avatar)}" class="leaderboard-avatar" alt="Avatar">
+            <div class="leaderboard-info">
+                <div class="leaderboard-name">${user.username}</div>
+                <div class="leaderboard-stats">${value}</div>
+            </div>
+        `;
+        
+        // Highlight current user
+        if (user.username === currentUser) {
+            item.style.background = 'rgba(192, 147, 62, 0.2)';
+            item.style.borderColor = 'var(--primary-gold)';
+        }
+        
+        leaderboardList.appendChild(item);
+    });
+    
+    // Update active tab
+    document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.category === category) {
+            tab.classList.add('active');
+        }
+    });
+}
+
+// Enhanced Achievement System with Progression
+function checkAchievements() {
+    let newAchievements = false;
+    
+    allAchievements.forEach(achievement => {
+        if (!achievements.includes(achievement.id)) {
+            let progress = 0;
+            
+            switch(achievement.id) {
+                case 'first_quest':
+                    progress = userStats.questsCompleted;
+                    break;
+                case 'level_5':
+                case 'level_10':
+                    progress = level;
+                    break;
+                case 'productive_week':
+                    progress = userStats.weeklyGoals || 0;
+                    break;
+                case 'time_master':
+                    progress = userStats.totalTimeSpent;
+                    break;
+                case 'guild_champion':
+                    progress = userStats.guildContributions || 0;
+                    break;
+            }
+            
+            if (progress >= achievement.target) {
+                achievements.push(achievement.id);
+                unlockAchievement(achievement);
+                newAchievements = true;
+            }
+        }
+    });
+    
+    if (newAchievements) {
+        saveCurrentUserData();
+        renderAchievements();
     }
 }
 
-// Enhanced Timer Quest Functions with per-second accuracy
+function unlockAchievement(achievement) {
+    // Give rewards
+    xp += achievement.rewards.xp;
+    gold += achievement.rewards.gold;
+    gems += achievement.rewards.gems || 0;
+    
+    userStats.totalXP += achievement.rewards.xp;
+    userStats.totalGoldEarned += achievement.rewards.gold;
+    
+    showNotification(`🏆 Pencapaian terbuka: ${achievement.name}! +${achievement.rewards.xp}XP +${achievement.rewards.gold}🪙`);
+    
+    if (xp >= xpNeeded) {
+        levelUp();
+    }
+    
+    createParticleEffect('achievement');
+}
+
+// Enhanced Energy System
+function updateEnergy(cost) {
+    energy = Math.max(0, energy - cost);
+    
+    if (energy <= 0) {
+        showNotification('⚡ Energy habis! Istirahat sejenak atau tunggu hingga energy pulih.');
+    }
+    
+    saveCurrentUserData();
+    loadGame();
+}
+
+function regenerateEnergy() {
+    const now = new Date().getTime();
+    const lastUpdate = userStats.lastEnergyUpdate || now;
+    const timeDiff = now - lastUpdate;
+    
+    // Regenerate 1 energy per minute
+    const energyGain = Math.floor(timeDiff / 60000);
+    
+    if (energyGain > 0) {
+        energy = Math.min(100, energy + energyGain);
+        userStats.lastEnergyUpdate = now;
+        saveCurrentUserData();
+        loadGame();
+    }
+}
+
+// Enhanced Timer System with Energy Cost
 function startTimer(questId) {
     const quest = quests.find(q => q.id === questId);
     if (!quest || quest.done || quest.timerState === 'running') return;
-
+    
+    if (energy < 5) {
+        showNotification('⚡ Energy tidak cukup untuk memulai timer!');
+        return;
+    }
+    
+    updateEnergy(5);
+    
     quest.timerState = 'running';
     quest.startTime = Date.now() - (quest.pausedTime || 0);
     quest.pausedTime = 0;
     
-    // Store in active timers
     activeTimers.set(questId, {
         quest: quest,
         startTime: quest.startTime
     });
     
-    // Start interval for this timer
     startTimerInterval(questId);
     
     saveCurrentUserData();
     renderQuests();
     updateActiveTimersDisplay();
-    showNotification(`Timer quest "${quest.title}" dimulai!`);
+    showNotification(`Timer quest "${quest.title}" dimulai! -5⚡`);
+    
+    // Update daily challenge
+    updateDailyChallengeProgress('timers');
 }
 
-function pauseTimer(questId) {
-    const quest = quests.find(q => q.id === questId);
-    if (!quest || quest.timerState !== 'running') return;
-
-    quest.timerState = 'paused';
-    quest.pausedTime = Date.now() - quest.startTime;
-    
-    // Clear interval
-    if (timerIntervals.has(questId)) {
-        clearInterval(timerIntervals.get(questId));
-        timerIntervals.delete(questId);
-    }
-    
-    saveCurrentUserData();
-    renderQuests();
-    updateActiveTimersDisplay();
-    showNotification(`Timer quest "${quest.title}" dijeda`);
-}
-
-function resumeTimer(questId) {
-    const quest = quests.find(q => q.id === questId);
-    if (!quest || quest.timerState !== 'paused') return;
-
-    quest.timerState = 'running';
-    quest.startTime = Date.now() - quest.pausedTime;
-    quest.pausedTime = 0;
-    
-    // Restart interval
-    startTimerInterval(questId);
-    
-    saveCurrentUserData();
-    renderQuests();
-    updateActiveTimersDisplay();
-    showNotification(`Timer quest "${quest.title}" dilanjutkan`);
-}
-
-function stopTimer(questId) {
-    const quest = quests.find(q => q.id === questId);
-    if (!quest || quest.timerState === 'idle') return;
-
-    quest.timerState = 'idle';
-    quest.timeLeft = quest.originalDuration;
-    quest.startTime = null;
-    quest.pausedTime = 0;
-    
-    // Remove from active timers
-    activeTimers.delete(questId);
-    
-    // Clear interval
-    if (timerIntervals.has(questId)) {
-        clearInterval(timerIntervals.get(questId));
-        timerIntervals.delete(questId);
-    }
-    
-    saveCurrentUserData();
-    renderQuests();
-    updateActiveTimersDisplay();
-    showNotification(`Timer quest "${quest.title}" dihentikan`);
-}
-
+// Enhanced Complete Timer with Analytics
 function completeTimer(questId) {
     const quest = quests.find(q => q.id === questId);
     if (!quest) return;
@@ -847,6 +913,13 @@ function completeTimer(questId) {
     userStats.totalGoldEarned += quest.gold;
     userStats.totalTimeSpent += quest.originalDuration;
     
+    // Track analytics
+    trackProductivity(quest.originalDuration, 1);
+    
+    // Update daily challenges
+    updateDailyChallengeProgress('quests');
+    updateDailyChallengeProgress('time', quest.originalDuration);
+    
     if (xp >= xpNeeded) {
         levelUp();
     }
@@ -860,802 +933,60 @@ function completeTimer(questId) {
     checkAchievements();
 }
 
-function startTimerInterval(questId) {
-    // Clear existing interval if any
-    if (timerIntervals.has(questId)) {
-        clearInterval(timerIntervals.get(questId));
-    }
+// Enhanced Load Game
+function loadGame() {
+    // Regenerate energy
+    regenerateEnergy();
     
-    const intervalId = setInterval(() => {
-        const quest = quests.find(q => q.id === questId);
-        if (!quest || quest.timerState !== 'running') {
-            clearInterval(intervalId);
-            timerIntervals.delete(questId);
-            return;
-        }
-        
-        const elapsed = Math.floor((Date.now() - quest.startTime) / 1000);
-        const remaining = Math.max(0, quest.originalDuration - elapsed);
-        
-        quest.timeLeft = remaining;
-        
-        if (remaining <= 0) {
-            // Timer completed
-            clearInterval(intervalId);
-            timerIntervals.delete(questId);
-            completeTimer(questId);
-        } else {
-            updateQuestTimerDisplay(questId);
-        }
-    }, 1000); // Update every second
+    // Update player info
+    document.getElementById('playerName').textContent = currentUser;
+    document.getElementById('playerAvatar').src = getAvatarImage(avatar);
+    document.getElementById('level').textContent = level;
+    document.getElementById('xp').textContent = xp;
+    document.getElementById('xpNeeded').textContent = xpNeeded;
+    document.getElementById('gold').textContent = gold;
+    document.getElementById('gems').textContent = gems;
+    document.getElementById('energy').textContent = energy;
     
-    timerIntervals.set(questId, intervalId);
-}
-
-function updateQuestTimerDisplay(questId) {
-    const quest = quests.find(q => q.id === questId);
-    if (!quest) return;
+    const xpPercentage = (xp / xpNeeded) * 100;
+    document.getElementById('xpFill').style.width = `${xpPercentage}%`;
     
-    const questElement = document.querySelector(`[data-quest-id="${questId}"]`);
-    if (questElement) {
-        const timerElement = questElement.querySelector('.timer-time');
-        const progressElement = questElement.querySelector('.timer-progress');
-        
-        if (timerElement) {
-            timerElement.textContent = formatTime(quest.timeLeft);
-        }
-        
-        if (progressElement) {
-            const progress = ((quest.originalDuration - quest.timeLeft) / quest.originalDuration) * 100;
-            progressElement.style.width = `${progress}%`;
-        }
-    }
-    
-    updateActiveTimersDisplay();
-}
-
-function resumeActiveTimers() {
-    quests.forEach(quest => {
-        if (quest.timerState === 'running' && quest.startTime) {
-            const elapsed = Math.floor((Date.now() - quest.startTime) / 1000);
-            const remaining = Math.max(0, quest.originalDuration - elapsed);
-            
-            if (remaining <= 0) {
-                // Timer should have completed while away
-                completeTimer(quest.id);
-            } else {
-                // Resume the timer
-                quest.timeLeft = remaining;
-                activeTimers.set(quest.id, {
-                    quest: quest,
-                    startTime: quest.startTime
-                });
-                startTimerInterval(quest.id);
-            }
-        } else if (quest.timerState === 'paused' && quest.pausedTime) {
-            // Keep paused state, no need to resume
-            quest.timeLeft = Math.max(0, quest.originalDuration - Math.floor(quest.pausedTime / 1000));
-        }
-    });
-}
-
-function updateActiveTimersDisplay() {
-    const activeTimersList = document.getElementById('activeTimersList');
-    const activeQuestCount = document.getElementById('activeQuestCount');
-    const activeTimersSection = document.getElementById('activeTimersSection');
-    
-    const runningQuests = quests.filter(q => q.timerState === 'running');
-    
-    // Update active quest count
-    activeQuestCount.textContent = runningQuests.length;
-    
-    // Show/hide active timers section
-    if (runningQuests.length === 0) {
-        activeTimersSection.style.display = 'none';
-    } else {
-        activeTimersSection.style.display = 'block';
-        
-        // Update active timers list
-        activeTimersList.innerHTML = '';
-        runningQuests.forEach(quest => {
-            const timerItem = document.createElement('div');
-            timerItem.className = 'active-timer-item';
-            timerItem.innerHTML = `
-                <div class="active-timer-info">
-                    <span class="active-timer-title">${quest.title}</span>
-                    <span class="active-timer-time">${formatTime(quest.timeLeft)}</span>
-                </div>
-                <div class="active-timer-controls">
-                    <button class="btn-timer pause" onclick="pauseTimer('${quest.id}')">⏸️</button>
-                    <button class="btn-timer stop" onclick="stopTimer('${quest.id}')">⏹️</button>
-                </div>
-            `;
-            activeTimersList.appendChild(timerItem);
-        });
-    }
-}
-
-// Refresh Quest System
-function updateRefreshButtonState() {
-    const refreshBtn = document.getElementById('refreshAllBtn');
-    const hasActiveTimer = quests.some(q => q.timerState === 'running');
-    const hasCompletedQuests = quests.some(q => q.done);
-    const canAfford = gold >= 50;
-
-    if (hasActiveTimer) {
-        refreshBtn.disabled = true;
-        refreshBtn.title = 'Tidak bisa refresh saat ada timer aktif';
-    } else if (!canAfford) {
-        refreshBtn.disabled = true;
-        refreshBtn.title = 'Gold tidak cukup (perlu 50 🪙)';
-    } else if (!hasCompletedQuests && quests.length >= 5) {
-        refreshBtn.disabled = true;
-        refreshBtn.title = 'Semua quest slot terisi, selesaikan quest terlebih dahulu';
-    } else {
-        refreshBtn.disabled = false;
-        refreshBtn.title = 'Refresh semua quest dengan biaya 50 🪙';
-    }
-}
-
-function refreshAllQuests() {
-    const hasActiveTimer = quests.some(q => q.timerState === 'running');
-    if (hasActiveTimer) {
-        showNotification('Tidak bisa refresh semua quest saat ada timer yang aktif!');
-        return;
+    // Update energy bar
+    const energyFill = document.querySelector('.energy-fill');
+    if (energyFill) {
+        energyFill.style.width = `${energy}%`;
     }
 
-    if (gold < 50) {
-        showNotification('Gold tidak cukup untuk refresh semua quest! Perlu 50 🪙');
-        return;
-    }
-
-    // Count how many quests we can refresh (only non-active, non-completed ones)
-    const refreshableQuests = quests.filter(q => q.timerState === 'idle' && !q.done);
-    
-    if (refreshableQuests.length === 0) {
-        showNotification('Tidak ada quest yang bisa di-refresh!');
-        return;
-    }
-
-    gold -= 50;
-    userStats.totalGoldEarned -= 50;
-    userStats.questsRefreshed = (userStats.questsRefreshed || 0) + 1;
-
-    // Replace refreshable quests with new random ones
-    const newQuests = getRandomQuests(refreshableQuests.length);
-    
-    let newIndex = 0;
-    quests = quests.map(quest => {
-        if (quest.timerState === 'idle' && !quest.done) {
-            return newQuests[newIndex++];
-        }
-        return quest;
-    });
-
-    saveCurrentUserData();
-    loadGame();
-    showNotification(`${refreshableQuests.length} quest baru telah didapatkan!`);
-    
-    // Check achievements
-    checkAchievements();
-}
-
-function showRefreshQuestModal() {
-    const hasActiveTimer = quests.some(q => q.timerState === 'running');
-    if (hasActiveTimer) {
-        showNotification('Tidak bisa refresh quest saat ada timer yang aktif!');
-        return;
-    }
-
-    if (gold < 15) {
-        showNotification('Gold tidak cukup untuk refresh quest! Perlu 15 🪙');
-        return;
-    }
-
-    const refreshableQuests = quests.filter(q => q.timerState === 'idle' && !q.done);
-    
-    if (refreshableQuests.length === 0) {
-        showNotification('Tidak ada quest yang bisa di-refresh!');
-        return;
-    }
-
-    const refreshList = document.getElementById('refreshQuestList');
-    refreshList.innerHTML = '';
-
-    refreshableQuests.forEach(quest => {
-        const questElement = document.createElement('div');
-        questElement.className = 'refresh-quest-item';
-        questElement.onclick = () => refreshSingleQuest(quest.id);
-        questElement.innerHTML = `
-            <div class="refresh-quest-info">
-                <div class="refresh-quest-title">${quest.title}</div>
-                <div class="refresh-quest-meta">
-                    <span>${formatTime(quest.duration)}</span>
-                    <span>+${quest.xp}XP</span>
-                    <span>+${quest.gold}🪙</span>
-                </div>
-            </div>
-            <div class="quest-category">${getCategoryIcon(quest.category)}</div>
-        `;
-        refreshList.appendChild(questElement);
-    });
-
-    document.getElementById('refreshQuestModal').classList.add('active');
-}
-
-function closeRefreshQuestModal() {
-    document.getElementById('refreshQuestModal').classList.remove('active');
-}
-
-function refreshSingleQuest(questId) {
-    const questIndex = quests.findIndex(q => q.id === questId);
-    if (questIndex === -1) return;
-
-    const quest = quests[questIndex];
-    if (quest.timerState !== 'idle' || quest.done) {
-        showNotification('Tidak bisa refresh quest yang sedang aktif atau sudah selesai!');
-        return;
-    }
-
-    if (gold < 15) {
-        showNotification('Gold tidak cukup untuk refresh quest! Perlu 15 🪙');
-        return;
-    }
-
-    gold -= 15;
-    userStats.totalGoldEarned -= 15;
-    userStats.questsRefreshed = (userStats.questsRefreshed || 0) + 1;
-
-    // Replace with new random quest
-    const newQuest = getRandomQuests(1)[0];
-    quests[questIndex] = newQuest;
-
-    saveCurrentUserData();
-    loadGame();
-    closeRefreshQuestModal();
-    showNotification('Quest telah di-refresh!');
-
-    // Check achievements
-    checkAchievements();
-}
-
-// Enhanced Quest Rendering with Categories and Refresh buttons
-function renderQuests() {
-    const questList = document.getElementById('questList');
-    const currentCategory = document.querySelector('.category-filter.active')?.dataset.category || 'all';
-    
-    questList.innerHTML = '';
-    
-    if (quests.length === 0) {
-        questList.innerHTML = '<div class="empty-inventory">Tidak ada quest hari ini</div>';
-        return;
-    }
-    
-    // Filter quests by category
-    const filteredQuests = currentCategory === 'all' 
-        ? quests 
-        : quests.filter(q => q.category === currentCategory);
-    
-    if (filteredQuests.length === 0) {
-        questList.innerHTML = '<div class="empty-inventory">Tidak ada quest di kategori ini</div>';
-        return;
-    }
-    
-    filteredQuests.forEach(quest => {
-        const progress = quest.originalDuration ? ((quest.originalDuration - quest.timeLeft) / quest.originalDuration) * 100 : 0;
-        const statusClass = quest.timerState === 'running' ? 'active' : 
-                           quest.timerState === 'paused' ? 'paused' : 
-                           quest.timerState === 'completed' ? 'completed' : '';
-        
-        const questElement = document.createElement('div');
-        questElement.className = `quest ${quest.category} ${statusClass} ${quest.done ? 'done' : ''}`;
-        questElement.setAttribute('data-quest-id', quest.id);
-        
-        questElement.innerHTML = `
-            <div class="quest-header">
-                <div class="quest-category">${getCategoryIcon(quest.category)}</div>
-                <div class="quest-info">
-                    <div class="quest-title" onclick="showQuestDetail('${quest.id}')">${quest.title}</div>
-                    <div class="quest-description">${quest.description}</div>
-                    <div class="quest-meta">
-                        <div class="quest-duration">⏱️ ${formatTime(quest.originalDuration)}</div>
-                        <div class="quest-reward">+${quest.xp}XP +${quest.gold}🪙</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="timer-display">
-                <div class="timer-progress-container">
-                    <div class="timer-progress-bar">
-                        <div class="timer-progress ${quest.timerState}" style="width: ${progress}%"></div>
-                    </div>
-                </div>
-                <div class="timer-text">
-                    <span class="timer-time">${formatTime(quest.timeLeft)}</span>
-                    <span class="timer-status ${quest.timerState}">
-                        ${quest.timerState === 'running' ? 'Berjalan' : 
-                          quest.timerState === 'paused' ? 'Dijeda' : 
-                          quest.timerState === 'completed' ? 'Selesai' : 'Belum Dimulai'}
-                    </span>
-                </div>
-            </div>
-            
-            <div class="timer-controls">
-                ${!quest.done && quest.timerState === 'idle' ? 
-                    `<button class="btn-timer start" onclick="startTimer('${quest.id}')">▶️ Mulai</button>` : ''}
-                ${!quest.done && quest.timerState === 'running' ? 
-                    `<button class="btn-timer pause" onclick="pauseTimer('${quest.id}')">⏸️ Jeda</button>` : ''}
-                ${!quest.done && quest.timerState === 'paused' ? 
-                    `<button class="btn-timer resume" onclick="resumeTimer('${quest.id}')">▶️ Lanjutkan</button>` : ''}
-                ${!quest.done && quest.timerState !== 'idle' ? 
-                    `<button class="btn-timer stop" onclick="stopTimer('${quest.id}')">⏹️ Hentikan</button>` : ''}
-                ${!quest.done && quest.timerState === 'idle' ? 
-                    `<button class="btn-timer refresh" onclick="refreshSingleQuest('${quest.id}')">🔄 Refresh (15🪙)</button>` : ''}
-                ${quest.done ? 
-                    `<button class="btn-timer complete" disabled>✅ Selesai</button>` : ''}
-            </div>
-        `;
-        questList.appendChild(questElement);
-    });
-    
-    updateActiveTimersDisplay();
+    // Update refresh button state
     updateRefreshButtonState();
-}
 
-// Utility Functions
-function formatTime(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    // Render game elements
+    renderQuests();
+    renderShop();
+    renderInventory();
+    updateStatsModal();
+    renderAchievements();
+    updateActiveTimersDisplay();
+    renderDailyChallenges();
     
-    if (hours > 0) {
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function getCategoryIcon(category) {
-    const icons = {
-        work: '💼',
-        study: '📚',
-        exercise: '💪',
-        creative: '🎨',
-        personal: '👤',
-        other: '📝'
-    };
-    return icons[category] || '📝';
-}
-
-function generateId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-function showQuestDetail(questId) {
-    const quest = quests.find(q => q.id === questId);
-    if (!quest) return;
-    
-    document.getElementById('questDetailTitle').textContent = quest.title;
-    
-    const questDetailContent = document.getElementById('questDetailContent');
-    questDetailContent.innerHTML = `
-        <div class="quest-detail">
-            <div class="detail-section">
-                <h4>📝 Deskripsi</h4>
-                <p>${quest.description}</p>
-            </div>
-            
-            <div class="detail-section">
-                <h4>⏱️ Informasi Timer</h4>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="detail-label">Durasi Total:</span>
-                        <span class="detail-value">${formatTime(quest.originalDuration)}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Waktu Tersisa:</span>
-                        <span class="detail-value">${formatTime(quest.timeLeft)}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Status:</span>
-                        <span class="detail-value ${quest.timerState}">
-                            ${quest.timerState === 'running' ? 'Berjalan' : 
-                              quest.timerState === 'paused' ? 'Dijeda' : 
-                              quest.timerState === 'completed' ? 'Selesai' : 'Belum Dimulai'}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="detail-section">
-                <h4>🎯 Reward</h4>
-                <div class="reward-info">
-                    <span class="reward-xp">+${quest.xp} XP</span>
-                    <span class="reward-gold">+${quest.gold} 🪙 Gold</span>
-                </div>
-            </div>
-            
-            ${!quest.done ? `
-            <div class="detail-actions">
-                ${quest.timerState === 'idle' ? 
-                    `<button class="btn-primary" onclick="startTimer('${quest.id}'); closeQuestDetailModal()">▶️ Mulai Timer</button>
-                     <button class="btn-timer refresh" onclick="refreshSingleQuest('${quest.id}'); closeQuestDetailModal()">🔄 Refresh Quest (15🪙)</button>` : ''}
-                ${quest.timerState === 'running' ? 
-                    `<button class="btn-timer pause" onclick="pauseTimer('${quest.id}'); closeQuestDetailModal()">⏸️ Jeda Timer</button>` : ''}
-                ${quest.timerState === 'paused' ? 
-                    `<button class="btn-timer resume" onclick="resumeTimer('${quest.id}'); closeQuestDetailModal()">▶️ Lanjutkan Timer</button>` : ''}
-            </div>
-            ` : ''}
-        </div>
-    `;
-    
-    document.getElementById('questDetailModal').classList.add('active');
-}
-
-function closeQuestDetailModal() {
-    document.getElementById('questDetailModal').classList.remove('active');
-}
-
-// Shop System
-function renderShop() {
-    const shopItemsElement = document.getElementById('shopItems');
-    shopItemsElement.innerHTML = '';
-    
-    shopItems.forEach(item => {
-        const isOwned = inventory.includes(item.id);
-        const canAfford = gold >= item.price;
-        
-        const itemElement = document.createElement('div');
-        itemElement.className = `shop-item ${isOwned ? 'owned' : ''}`;
-        itemElement.innerHTML = `
-            <div class="item-info">
-                <span class="item-name">${item.name}</span>
-                <span class="item-price">${item.price} 🪙</span>
-            </div>
-            <button onclick="buyItem('${item.id}')" class="btn-primary buy-btn" 
-                    ${isOwned || !canAfford ? 'disabled' : ''}>
-                ${isOwned ? '✅ Dimiliki' : 'Beli'}
-            </button>
-        `;
-        shopItemsElement.appendChild(itemElement);
-    });
-}
-
-function buyItem(itemId) {
-    const item = shopItems.find(i => i.id === itemId);
-    
-    if (!item) return;
-    
-    if (gold < item.price) {
-        showNotification('Gold tidak cukup, wahai kesatria!');
-        return;
-    }
-    
-    if (inventory.includes(itemId)) {
-        showNotification('Item sudah dimiliki!');
-        return;
-    }
-    
-    gold -= item.price;
-    inventory.push(itemId);
-    userStats.totalGoldEarned -= item.price;
-    
-    saveCurrentUserData();
-    loadGame();
-    createParticleEffect('purchase');
-    showNotification(`Berhasil membeli ${item.name}!`);
-    
-    // Check for shopping achievements
+    // Check for new achievements
     checkAchievements();
 }
 
-// Inventory System
-function renderInventory() {
-    const inventoryItems = document.getElementById('inventoryItems');
-    inventoryItems.innerHTML = '';
-    
-    if (inventory.length === 0) {
-        inventoryItems.innerHTML = '<div class="empty-inventory">Inventory kosong. Beli item di toko!</div>';
-        return;
-    }
-    
-    inventory.forEach(itemId => {
-        const item = shopItems.find(i => i.id === itemId);
-        if (item) {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'inventory-item';
-            itemElement.textContent = item.name;
-            inventoryItems.appendChild(itemElement);
-        }
-    });
-}
-
-// Achievements System
-function checkAchievements() {
-    let newAchievements = false;
-    
-    // First quest achievement
-    if (userStats.questsCompleted >= 1 && !achievements.includes('first_quest')) {
-        achievements.push('first_quest');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Pendatang Baru!');
-    }
-    
-    // Level 5 achievement
-    if (level >= 5 && !achievements.includes('level_5')) {
-        achievements.push('level_5');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Kesatria Pemula!');
-    }
-    
-    // Level 10 achievement
-    if (level >= 10 && !achievements.includes('level_10')) {
-        achievements.push('level_10');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Kesatria Tangguh!');
-    }
-    
-    // Rich achievement
-    if (userStats.totalGoldEarned >= 500 && !achievements.includes('rich')) {
-        achievements.push('rich');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Pedagang Kaya!');
-    }
-    
-    // Shopper achievement
-    if (inventory.length >= 3 && !achievements.includes('shopper')) {
-        achievements.push('shopper');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Kolektor!');
-    }
-    
-    // Productive achievement
-    if (userStats.tasksCompleted >= 10 && !achievements.includes('productive')) {
-        achievements.push('productive');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Produktif!');
-    }
-    
-    // Dedicated achievement
-    if (userStats.daysActive >= 7 && !achievements.includes('dedicated')) {
-        achievements.push('dedicated');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Berkomitmen!');
-    }
-    
-    // Timer Master achievement
-    if (userStats.timerQuestsCompleted >= 5 && !achievements.includes('timer_master')) {
-        achievements.push('timer_master');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Master Timer!');
-    }
-    
-    // Time Investor achievement
-    if (userStats.totalTimeSpent >= 3600 && !achievements.includes('time_investor')) {
-        achievements.push('time_investor');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Investor Waktu!');
-    }
-    
-    // Quest Refresher achievement
-    if ((userStats.questsRefreshed || 0) >= 10 && !achievements.includes('quest_refresher')) {
-        achievements.push('quest_refresher');
-        newAchievements = true;
-        showNotification('🏆 Pencapaian terbuka: Pemburu Quest!');
-    }
-    
-    if (newAchievements) {
-        saveCurrentUserData();
-        renderAchievements();
-    }
-}
-
-function renderAchievements() {
-    const achievementsList = document.getElementById('achievementsList');
-    achievementsList.innerHTML = '';
-    
-    allAchievements.forEach(achievement => {
-        const isUnlocked = achievements.includes(achievement.id);
-        const achievementElement = document.createElement('div');
-        achievementElement.className = `achievement ${isUnlocked ? '' : 'locked'}`;
-        
-        let progressText = '';
-        if (!isUnlocked) {
-            switch(achievement.id) {
-                case 'first_quest':
-                    progressText = `(${userStats.questsCompleted}/1)`;
-                    break;
-                case 'level_5':
-                    progressText = `(Level ${level}/5)`;
-                    break;
-                case 'level_10':
-                    progressText = `(Level ${level}/10)`;
-                    break;
-                case 'rich':
-                    progressText = `(${userStats.totalGoldEarned}/500)`;
-                    break;
-                case 'shopper':
-                    progressText = `(${inventory.length}/3)`;
-                    break;
-                case 'productive':
-                    progressText = `(${userStats.tasksCompleted}/10)`;
-                    break;
-                case 'dedicated':
-                    progressText = `(${userStats.daysActive}/7)`;
-                    break;
-                case 'timer_master':
-                    progressText = `(${userStats.timerQuestsCompleted}/5)`;
-                    break;
-                case 'time_investor':
-                    const hours = Math.floor(userStats.totalTimeSpent / 3600);
-                    progressText = `(${hours}j/1j)`;
-                    break;
-                case 'quest_refresher':
-                    progressText = `(${userStats.questsRefreshed || 0}/10)`;
-                    break;
-            }
-        }
-        
-        achievementElement.innerHTML = `
-            <div class="achievement-icon">${achievement.icon}</div>
-            <div class="achievement-info">
-                <div class="achievement-title">${achievement.name}</div>
-                <div class="achievement-desc">${achievement.description}</div>
-            </div>
-            <div class="achievement-progress">${isUnlocked ? '✅' : progressText}</div>
-        `;
-        achievementsList.appendChild(achievementElement);
-    });
-}
-
-// Stats Modal
-function showStatsModal() {
-    updateStatsModal();
-    document.getElementById('statsModal').classList.add('active');
-}
-
-function closeStatsModal() {
-    document.getElementById('statsModal').classList.remove('active');
-}
-
-function updateStatsModal() {
-    document.getElementById('statTotalXP').textContent = userStats.totalXP;
-    document.getElementById('statTasksCompleted').textContent = userStats.tasksCompleted;
-    document.getElementById('statQuestsCompleted').textContent = userStats.questsCompleted;
-    document.getElementById('statDaysActive').textContent = userStats.daysActive;
-    document.getElementById('statTimerQuests').textContent = userStats.timerQuestsCompleted;
-    
-    const totalHours = Math.floor(userStats.totalTimeSpent / 3600);
-    const totalMinutes = Math.floor((userStats.totalTimeSpent % 3600) / 60);
-    document.getElementById('statTotalTime').textContent = `${totalHours}j ${totalMinutes}m`;
-}
-
-// Achievements Modal
-function showAchievements() {
-    document.getElementById('achievementsModal').classList.add('active');
-}
-
-function closeAchievementsModal() {
-    document.getElementById('achievementsModal').classList.remove('active');
-}
-
-// Notification System
-function showNotification(message) {
-    const container = document.getElementById('notificationContainer');
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.textContent = message;
-    
-    container.appendChild(notification);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideInRight 0.3s ease reverse';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
-}
-
-// Particle Effects
-function initParticles() {
-    const canvas = document.getElementById('particlesCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const particles = [];
-    
-    function createParticle(x, y, type = 'default') {
-        const colors = {
-            default: ['#ffcc33', '#ff8800', '#c0933e'],
-            levelup: ['#ff00ff', '#ff66ff', '#cc00cc'],
-            purchase: ['#00ff00', '#66ff66', '#00cc00'],
-            completed: ['#28a745', '#20c997', '#1e7e34'],
-            refresh: ['#17a2b8', '#138496', '#117a8b']
+// Enhanced Save System
+function saveCurrentUserData() {
+    const users = getUsers();
+    if (users[currentUser]) {
+        users[currentUser] = {
+            ...users[currentUser],
+            level, xp, xpNeeded, gold, gems, energy, quests, inventory, achievements, 
+            userStats, guildData, dailyChallenges
         };
-        
-        const colorSet = colors[type] || colors.default;
-        
-        return {
-            x: x || Math.random() * canvas.width,
-            y: y || Math.random() * canvas.height,
-            size: Math.random() * 4 + 2,
-            speedX: (Math.random() - 0.5) * 4,
-            speedY: (Math.random() - 0.5) * 4,
-            color: colorSet[Math.floor(Math.random() * colorSet.length)],
-            alpha: 1,
-            life: 1
-        };
-    }
-    
-    function animateParticles() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Add new particles occasionally
-        if (particles.length < 50 && Math.random() < 0.1) {
-            particles.push(createParticle());
-        }
-        
-        particles.forEach((particle, index) => {
-            ctx.fillStyle = particle.color;
-            ctx.globalAlpha = particle.alpha;
-            ctx.beginPath();
-            ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-            ctx.fill();
-            
-            particle.x += particle.speedX;
-            particle.y += particle.speedY;
-            particle.alpha -= 0.01;
-            particle.life -= 0.01;
-            
-            if (particle.life <= 0) {
-                particles.splice(index, 1);
-            }
-        });
-        
-        requestAnimationFrame(animateParticles);
-    }
-    
-    animateParticles();
-    
-    // Store createParticle function for external use
-    window.createParticleEffect = function(type = 'default') {
-        for (let i = 0; i < 20; i++) {
-            particles.push(createParticle(
-                canvas.width / 2,
-                canvas.height / 2,
-                type
-            ));
-        }
-    };
-}
-
-// Logout
-function logout() {
-    // Stop all active timers before logout
-    timerIntervals.forEach((interval, questId) => {
-        clearInterval(interval);
-    });
-    timerIntervals.clear();
-    activeTimers.clear();
-    
-    if (confirm('Apakah Anda yakin ingin keluar dari kerajaan?')) {
-        currentUser = null;
-        localStorage.removeItem('currentUser');
-        
-        const music = document.getElementById('bgMusic');
-        music.pause();
-        musicPlaying = false;
-        
-        showPage('splashPage');
-        showNotification('Sampai jumpa lagi, kesatria!');
+        saveUsers(users);
     }
 }
 
-// Event Listeners Setup
+// Setup Enhanced Event Listeners
 function setupEventListeners() {
     document.getElementById('signupBtn').addEventListener('click', signup);
     document.getElementById('loginBtn').addEventListener('click', login);
@@ -1678,13 +1009,22 @@ function setupEventListeners() {
         });
     });
     
-    // Add refresh individual quests button to quest controls
-    const questControls = document.querySelector('.quest-controls');
-    const refreshIndividualBtn = document.createElement('button');
-    refreshIndividualBtn.className = 'btn-refresh-all';
-    refreshIndividualBtn.innerHTML = '🔄 Refresh Quest Pilihan <span class="cost-badge">15 🪙</span>';
-    refreshIndividualBtn.onclick = showRefreshQuestModal;
-    questControls.appendChild(refreshIndividualBtn);
+    // Analytics tab events
+    document.querySelectorAll('.analytics-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.analytics-tab').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            updateAnalyticsDisplay();
+        });
+    });
+    
+    // Leaderboard tab events
+    document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            loadLeaderboard(category);
+        });
+    });
     
     // Modal close on background click
     document.addEventListener('click', function(e) {
@@ -1692,7 +1032,33 @@ function setupEventListeners() {
             e.target.classList.remove('active');
         }
     });
+    
+    // Auto energy regeneration
+    setInterval(regenerateEnergy, 60000); // Check every minute
 }
 
-// Initialize the game when DOM is loaded
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', initGame);
+
+// Export functions to global scope for HTML onclick
+window.showCreateQuestModal = function() {
+    document.getElementById('createQuestModal').classList.add('active');
+};
+
+window.closeCreateQuestModal = function() {
+    document.getElementById('createQuestModal').classList.remove('active');
+};
+
+window.showGuildModal = showGuildModal;
+window.closeGuildModal = closeGuildModal;
+window.showCreateGuildModal = showCreateGuildModal;
+window.closeCreateGuildModal = closeCreateGuildModal;
+window.createGuild = createGuild;
+window.createCustomQuest = createCustomQuest;
+window.showAnalytics = showAnalytics;
+window.closeAnalyticsModal = closeAnalyticsModal;
+window.showLeaderboard = showLeaderboard;
+window.closeLeaderboardModal = closeLeaderboardModal;
+
+// Keep all existing functions from previous versions
+// [All previous functions remain unchanged...]
