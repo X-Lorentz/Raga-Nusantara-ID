@@ -1,23 +1,25 @@
-# 🏯 Raga Nusantara v3.1
+# 🏯 Raga Nusantara v3.2
 
-RPG Produktivitas bertema Nusantara dengan **Timer Quest System** yang canggih!
+RPG Produktivitas bertema Nusantara dengan **Enhanced Timer & Refresh Quest System**!
 
-## 🎮 Fitur Baru v3.1
+## 🎮 Fitur Baru v3.2
 
-### ⏰ Enhanced Timer Quest System
-- **Timer Persisten**: Timer tetap berjalan meski halaman direfresh
-- **Progress Bar Real-time**: Visualisasi progress waktu yang live
-- **Kontrol Timer Lengkap**: Mulai, Jeda, Lanjutkan, Hentikan
-- **Kategori Quest**: Work, Study, Exercise, Creative, Other dengan ikon berbeda
-- **Auto-completion**: Quest otomatis selesai ketika timer habis
-- **Visual Indicators**: Quest aktif ditandai dengan highlight khusus
+### ⏰ Enhanced Timer System
+- **Timer Per Detik**: Akurasi tinggi dengan update real-time setiap detik
+- **Persistent State**: Timer tetap berjalan meski browser ditutup
+- **Progress Bar**: Visualisasi progress yang smooth dan akurat
 
-### 🎯 Fitur Timer Spesifik
-- **Multiple Active Timers**: Beberapa quest bisa berjalan bersamaan
-- **Active Timers Overview**: Panel khusus untuk monitor timer aktif
-- **Quest Categories Filter**: Filter quest berdasarkan kategori
-- **Quest Detail Modal**: Informasi detail setiap quest
-- **Persistent State**: Status timer tersimpan di localStorage
+### 🔄 Refresh Quest System
+- **Refresh All**: Ganti semua quest dengan biaya 50 🪙
+- **Refresh Individual**: Pilih quest spesifik dengan biaya 15 🪙
+- **Smart Refresh**: Hanya quest yang tidak aktif bisa di-refresh
+- **Cost Management**: Sistem biaya yang seimbang
+
+### 🎯 Expanded Quest Pool
+- **20+ Variasi Quest**: Dari 7 menjadi 20+ quest berbeda
+- **6 Kategori**: Work, Study, Exercise, Creative, Personal, Other
+- **Random Selection**: Quest acak setiap refresh/hari
+- **Balanced Rewards**: XP dan Gold yang proporsional dengan durasi
 
 ## 🚀 Cara Menjalankan
 
@@ -35,27 +37,32 @@ RPG Produktivitas bertema Nusantara dengan **Timer Quest System** yang canggih!
 - **Username**: test | **Password**: 123456 (Level 10)
 - **Username**: asep | **Password**: 4321 (Level 20)
 
-## 🕒 Cara Menggunakan Timer Quest
+## 🕒 Cara Menggunakan Timer & Refresh
 
-1. **Pilih Quest**: Klik quest yang ingin dikerjakan
-2. **Mulai Timer**: Klik "Mulai" untuk memulai countdown
-3. **Monitor Progress**: Lihat progress bar dan waktu tersisa
-4. **Kontrol Timer**: 
-   - ⏸️ Jeda: Untuk istirahat sejenak
-   - ▶️ Lanjutkan: Untuk melanjutkan timer
-   - ⏹️ Hentikan: Untuk membatalkan quest
-5. **Auto Reward**: Quest otomatis selesai dan beri reward ketika timer habis
+### Timer Quest:
+1. **Pilih Quest** - Klik quest yang ingin dikerjakan
+2. **Mulai Timer** - Klik "Mulai" untuk countdown akurat
+3. **Monitor** - Lihat progress bar dan waktu real-time
+4. **Kontrol** - Jeda, lanjutkan, atau hentikan kapan saja
+5. **Auto Reward** - Quest selesai otomatis ketika timer habis
+
+### Refresh Quest:
+- **Refresh All** (50🪙): Tombol di atas daftar quest
+- **Refresh Individual** (15🪙): Tombol di setiap quest atau modal pilihan
+- **Kondisi**: Hanya quest tidak aktif yang bisa di-refresh
 
 ## 🎯 Kategori Quest
-- 💼 **Work**: Tugas pekerjaan dan profesional
+- 💼 **Work**: Tugas profesional dan pekerjaan
 - 📚 **Study**: Belajar dan pengembangan skill
 - 💪 **Exercise**: Olahraga dan kesehatan
-- 🎨 **Creative**: Projek kreatif dan seni
-- 📝 **Other**: Aktivitas lainnya
+- 🎨 **Creative**: Projek seni dan kreativitas
+- 👤 **Personal**: Aktivitas personal dan rumah tangga
+- 📝 **Other**: Lain-lain dan pengembangan diri
 
-## 🔧 Teknologi
+## 🔧 Teknologi Enhanced
 - HTML5, CSS3, JavaScript (ES6+)
 - Local Storage untuk persistensi data
+- SetInterval untuk timer per detik
 - Canvas API untuk efek partikel
 - CSS Grid & Flexbox untuk layout responsif
 
@@ -64,4 +71,4 @@ Fully responsive dan bekerja optimal di semua device!
 
 ---
 
-**Raga Nusantara v3.1** - Tingkatkan produktivitas dengan sistem game yang engaging! 🚀
+**Raga Nusantara v3.2** - Sistem produktivitas dengan timer akurat dan quest yang selalu fresh! 🚀
