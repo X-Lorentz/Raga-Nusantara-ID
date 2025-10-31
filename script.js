@@ -1,6 +1,6 @@
 // =======================
-// 🎮 RAGA NUSANTARA v3.1
-// Enhanced Timer Quest System
+// 🎮 RAGA NUSANTARA v3.2
+// Enhanced Timer & Refresh Quest System
 // =======================
 
 // Global Variables
@@ -46,8 +46,279 @@ const allAchievements = [
     { id: "productive", name: "Produktif", description: "Selesaikan 10 tugas", icon: "✨", unlocked: false },
     { id: "dedicated", name: "Berkomitmen", description: "Aktif selama 7 hari", icon: "📅", unlocked: false },
     { id: "timer_master", name: "Master Timer", description: "Selesaikan 5 timer quest", icon: "⏰", unlocked: false },
-    { id: "time_investor", name: "Investor Waktu", description: "Habiskan 1 jam total di timer quest", icon: "⏱️", unlocked: false }
+    { id: "time_investor", name: "Investor Waktu", description: "Habiskan 1 jam total di timer quest", icon: "⏱️", unlocked: false },
+    { id: "quest_refresher", name: "Pemburu Quest", description: "Refresh quest 10 kali", icon: "🔄", unlocked: false }
 ];
+
+// Enhanced Quest Pool with 20+ quests
+const questPool = [
+    // Work Category (5 quests)
+    { 
+        title: "💼 Kerjakan Laporan", 
+        description: "Selesaikan laporan pekerjaan dengan fokus selama 45 menit",
+        category: "work",
+        duration: 2700, // 45 minutes
+        xp: 30, 
+        gold: 18 
+    },
+    { 
+        title: "📊 Analisis Data", 
+        description: "Analisis data dan buat insight selama 50 menit",
+        category: "work",
+        duration: 3000,
+        xp: 35, 
+        gold: 20 
+    },
+    { 
+        title: "📧 Organisasi Email", 
+        description: "Bersihkan dan organisasi inbox email selama 25 menit",
+        category: "work",
+        duration: 1500,
+        xp: 20, 
+        gold: 12 
+    },
+    { 
+        title: "📋 Rencana Mingguan", 
+        description: "Buat perencanaan kerja untuk minggu depan selama 20 menit",
+        category: "work",
+        duration: 1200,
+        xp: 15, 
+        gold: 8 
+    },
+    { 
+        title: "🤝 Meeting Produktif", 
+        description: "Persiapan dan follow-up meeting selama 40 menit",
+        category: "work",
+        duration: 2400,
+        xp: 25, 
+        gold: 15 
+    },
+
+    // Study Category (5 quests)
+    { 
+        title: "📚 Belajar Topik Baru", 
+        description: "Pelajari materi baru atau skill selama 45 menit",
+        category: "study",
+        duration: 2700,
+        xp: 30, 
+        gold: 18 
+    },
+    { 
+        title: "🌐 Bahasa Asing", 
+        description: "Latihan bahasa asing selama 30 menit",
+        category: "study",
+        duration: 1800,
+        xp: 22, 
+        gold: 12 
+    },
+    { 
+        title: "🎮 Game Edukasi", 
+        description: "Main game edukatif untuk melatih otak 25 menit",
+        category: "study",
+        duration: 1500,
+        xp: 18, 
+        gold: 10 
+    },
+    { 
+        title: "📖 Baca Buku", 
+        description: "Baca buku pengembangan diri 1 chapter (35 menit)",
+        category: "study",
+        duration: 2100,
+        xp: 25, 
+        gold: 14 
+    },
+    { 
+        title: "✍️ Review Materi", 
+        description: "Review dan buat rangkuman materi 20 menit",
+        category: "study",
+        duration: 1200,
+        xp: 15, 
+        gold: 8 
+    },
+
+    // Exercise Category (5 quests)
+    { 
+        title: "💪 Workout Ringan", 
+        description: "Latihan fisik ringan selama 25 menit",
+        category: "exercise",
+        duration: 1500,
+        xp: 20, 
+        gold: 12 
+    },
+    { 
+        title: "🚶 Jalan Santai", 
+        description: "Jalan kaki atau jogging selama 30 menit",
+        category: "exercise",
+        duration: 1800,
+        xp: 22, 
+        gold: 12 
+    },
+    { 
+        title: "🧘 Yoga & Stretching", 
+        description: "Sesi yoga dan peregangan 20 menit",
+        category: "exercise",
+        duration: 1200,
+        xp: 15, 
+        gold: 8 
+    },
+    { 
+        title: "🏃 Cardio Session", 
+        description: "Latihan kardio intensitas sedang 35 menit",
+        category: "exercise",
+        duration: 2100,
+        xp: 25, 
+        gold: 14 
+    },
+    { 
+        title: "💨 Breathing Exercise", 
+        description: "Latihan pernapasan dan relaksasi 15 menit",
+        category: "exercise",
+        duration: 900,
+        xp: 12, 
+        gold: 6 
+    },
+
+    // Creative Category (5 quests)
+    { 
+        title: "🎨 Project Kreatif", 
+        description: "Kerjakan proyek seni atau kreatif 50 menit",
+        category: "creative",
+        duration: 3000,
+        xp: 35, 
+        gold: 20 
+    },
+    { 
+        title: "✏️ Menulis Kreatif", 
+        description: "Tulis cerita atau puisi selama 40 menit",
+        category: "creative",
+        duration: 2400,
+        xp: 28, 
+        gold: 16 
+    },
+    { 
+        title: "🎵 Main Musik", 
+        description: "Berlatih alat musik selama 30 menit",
+        category: "creative",
+        duration: 1800,
+        xp: 22, 
+        gold: 12 
+    },
+    { 
+        title: "📝 Journaling", 
+        description: "Tulis jurnal harian dan refleksi 20 menit",
+        category: "creative",
+        duration: 1200,
+        xp: 15, 
+        gold: 8 
+    },
+    { 
+        title: "💡 Brainstorming", 
+        description: "Sesi brainstorming ide kreatif 25 menit",
+        category: "creative",
+        duration: 1500,
+        xp: 18, 
+        gold: 10 
+    },
+
+    // Personal Category (5 quests)
+    { 
+        title: "🧹 Bersih-bersih", 
+        description: "Bersihkan dan rapikan ruangan 30 menit",
+        category: "personal",
+        duration: 1800,
+        xp: 20, 
+        gold: 10 
+    },
+    { 
+        title: "🍳 Masak Sehat", 
+        description: "Siapkan makanan sehat dan bergizi 40 menit",
+        category: "personal",
+        duration: 2400,
+        xp: 25, 
+        gold: 14 
+    },
+    { 
+        title: "🌿 Meditasi", 
+        description: "Meditasi dan mindfulness 15 menit",
+        category: "personal",
+        duration: 900,
+        xp: 12, 
+        gold: 6 
+    },
+    { 
+        title: "📞 Telepon Keluarga", 
+        description: "Hubungi keluarga atau teman 25 menit",
+        category: "personal",
+        duration: 1500,
+        xp: 15, 
+        gold: 8 
+    },
+    { 
+        title: "🛌 Quality Rest", 
+        description: "Istirahat berkualitas tanpa gangguan 20 menit",
+        category: "personal",
+        duration: 1200,
+        xp: 12, 
+        gold: 6 
+    },
+
+    // Other Category (5 quests)
+    { 
+        title: "🔧 Perbaikan", 
+        description: "Perbaiki barang yang rusak 35 menit",
+        category: "other",
+        duration: 2100,
+        xp: 22, 
+        gold: 12 
+    },
+    { 
+        title: "🌱 Berkebun", 
+        description: "Merawat tanaman dan berkebun 30 menit",
+        category: "other",
+        duration: 1800,
+        xp: 20, 
+        gold: 10 
+    },
+    { 
+        title: "🎯 Target Harian", 
+        description: "Review dan evaluasi target harian 20 menit",
+        category: "other",
+        duration: 1200,
+        xp: 15, 
+        gold: 8 
+    },
+    { 
+        title: "💭 Refleksi Diri", 
+        description: "Self-reflection dan perencanaan hidup 25 menit",
+        category: "other",
+        duration: 1500,
+        xp: 18, 
+        gold: 9 
+    },
+    { 
+        title: "🌟 Skill Baru", 
+        description: "Eksplorasi dan belajar skill baru 45 menit",
+        category: "other",
+        duration: 2700,
+        xp: 30, 
+        gold: 16 
+    }
+];
+
+// Utility function to get random quests
+function getRandomQuests(count = 5) {
+    const shuffled = [...questPool].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count).map(quest => ({
+        ...quest,
+        id: generateId(),
+        timeLeft: quest.duration,
+        timerState: 'idle',
+        startTime: null,
+        originalDuration: quest.duration,
+        done: false,
+        pausedTime: 0
+    }));
+}
 
 // Initialize the game
 function initGame() {
@@ -126,7 +397,8 @@ function initializeSampleUsers() {
                 daysActive: 5, 
                 totalGoldEarned: 800,
                 timerQuestsCompleted: 3,
-                totalTimeSpent: 3600
+                totalTimeSpent: 3600,
+                questsRefreshed: 2
             },
             lastQuestDate: "",
             createdAt: new Date().toISOString()
@@ -153,7 +425,8 @@ function initializeSampleUsers() {
                 daysActive: 10, 
                 totalGoldEarned: 1500,
                 timerQuestsCompleted: 8,
-                totalTimeSpent: 7200
+                totalTimeSpent: 7200,
+                questsRefreshed: 5
             },
             lastQuestDate: "",
             createdAt: new Date().toISOString()
@@ -360,6 +633,9 @@ function loadGame() {
     const xpPercentage = (xp / xpNeeded) * 100;
     document.getElementById('xpFill').style.width = `${xpPercentage}%`;
 
+    // Update refresh button state
+    updateRefreshButtonState();
+
     // Render game elements
     renderQuests();
     renderShop();
@@ -438,110 +714,9 @@ function checkDailyQuests() {
     const today = new Date().toDateString();
     const userData = getCurrentUserData();
 
-    if (userData.lastQuestDate !== today) {
-        // Reset quests for new day
-        const dailyQuests = [
-            { 
-                id: generateId(),
-                title: "📖 Menulis 500 kata", 
-                description: "Fokus menulis selama 25 menit untuk menyelesaikan 500 kata",
-                category: "creative",
-                duration: 1500, // 25 minutes in seconds
-                timeLeft: 1500,
-                timerState: 'idle', // idle, running, paused, completed
-                startTime: null,
-                originalDuration: 1500,
-                done: false, 
-                xp: 25, 
-                gold: 15 
-            },
-            { 
-                id: generateId(),
-                title: "🧠 Belajar 30 menit", 
-                description: "Pelajari topik baru atau skill selama 30 menit",
-                category: "study",
-                duration: 1800, // 30 minutes
-                timeLeft: 1800,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 1800,
-                done: false, 
-                xp: 20, 
-                gold: 12 
-            },
-            { 
-                id: generateId(),
-                title: "💪 Olahraga ringan", 
-                description: "Lakukan olahraga ringan atau stretching selama 15 menit",
-                category: "exercise",
-                duration: 900, // 15 minutes
-                timeLeft: 900,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 900,
-                done: false, 
-                xp: 15, 
-                gold: 10 
-            },
-            { 
-                id: generateId(),
-                title: "🎨 Kreatif project", 
-                description: "Kerjakan proyek kreatif selama 45 menit tanpa gangguan",
-                category: "creative",
-                duration: 2700, // 45 minutes
-                timeLeft: 2700,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 2700,
-                done: false, 
-                xp: 30, 
-                gold: 18 
-            },
-            { 
-                id: generateId(),
-                title: "📚 Baca 1 chapter", 
-                description: "Baca satu chapter buku dengan fokus selama 20 menit",
-                category: "study",
-                duration: 1200, // 20 minutes
-                timeLeft: 1200,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 1200,
-                done: false, 
-                xp: 18, 
-                gold: 8 
-            },
-            { 
-                id: generateId(),
-                title: "💼 Kerjakan tugas", 
-                description: "Selesaikan tugas pekerjaan selama 40 menit",
-                category: "work",
-                duration: 2400, // 40 minutes
-                timeLeft: 2400,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 2400,
-                done: false, 
-                xp: 22, 
-                gold: 14 
-            },
-            { 
-                id: generateId(),
-                title: "🧹 Bersih-bersih", 
-                description: "Bersihkan ruangan selama 20 menit",
-                category: "other",
-                duration: 1200, // 20 minutes
-                timeLeft: 1200,
-                timerState: 'idle',
-                startTime: null,
-                originalDuration: 1200,
-                done: false, 
-                xp: 12, 
-                gold: 6 
-            }
-        ];
-        
-        quests = dailyQuests;
+    if (userData.lastQuestDate !== today || quests.length === 0) {
+        // Reset quests for new day or if no quests
+        quests = getRandomQuests(5);
         
         // Update user data
         const users = getUsers();
@@ -561,13 +736,14 @@ function checkDailyQuests() {
     }
 }
 
-// Timer Quest Functions
+// Enhanced Timer Quest Functions with per-second accuracy
 function startTimer(questId) {
     const quest = quests.find(q => q.id === questId);
     if (!quest || quest.done || quest.timerState === 'running') return;
 
     quest.timerState = 'running';
-    quest.startTime = Date.now();
+    quest.startTime = Date.now() - (quest.pausedTime || 0);
+    quest.pausedTime = 0;
     
     // Store in active timers
     activeTimers.set(questId, {
@@ -589,10 +765,7 @@ function pauseTimer(questId) {
     if (!quest || quest.timerState !== 'running') return;
 
     quest.timerState = 'paused';
-    
-    // Calculate elapsed time
-    const elapsed = Math.floor((Date.now() - quest.startTime) / 1000);
-    quest.timeLeft = Math.max(0, quest.timeLeft - elapsed);
+    quest.pausedTime = Date.now() - quest.startTime;
     
     // Clear interval
     if (timerIntervals.has(questId)) {
@@ -611,7 +784,8 @@ function resumeTimer(questId) {
     if (!quest || quest.timerState !== 'paused') return;
 
     quest.timerState = 'running';
-    quest.startTime = Date.now();
+    quest.startTime = Date.now() - quest.pausedTime;
+    quest.pausedTime = 0;
     
     // Restart interval
     startTimerInterval(questId);
@@ -629,6 +803,7 @@ function stopTimer(questId) {
     quest.timerState = 'idle';
     quest.timeLeft = quest.originalDuration;
     quest.startTime = null;
+    quest.pausedTime = 0;
     
     // Remove from active timers
     activeTimers.delete(questId);
@@ -652,6 +827,7 @@ function completeTimer(questId) {
     quest.timerState = 'completed';
     quest.done = true;
     quest.timeLeft = 0;
+    quest.pausedTime = 0;
     
     // Remove from active timers
     activeTimers.delete(questId);
@@ -699,7 +875,9 @@ function startTimerInterval(questId) {
         }
         
         const elapsed = Math.floor((Date.now() - quest.startTime) / 1000);
-        const remaining = Math.max(0, quest.timeLeft - elapsed);
+        const remaining = Math.max(0, quest.originalDuration - elapsed);
+        
+        quest.timeLeft = remaining;
         
         if (remaining <= 0) {
             // Timer completed
@@ -707,11 +885,9 @@ function startTimerInterval(questId) {
             timerIntervals.delete(questId);
             completeTimer(questId);
         } else {
-            // Update quest time left
-            quest.timeLeft = remaining;
             updateQuestTimerDisplay(questId);
         }
-    }, 1000);
+    }, 1000); // Update every second
     
     timerIntervals.set(questId, intervalId);
 }
@@ -742,7 +918,7 @@ function resumeActiveTimers() {
     quests.forEach(quest => {
         if (quest.timerState === 'running' && quest.startTime) {
             const elapsed = Math.floor((Date.now() - quest.startTime) / 1000);
-            const remaining = Math.max(0, quest.timeLeft - elapsed);
+            const remaining = Math.max(0, quest.originalDuration - elapsed);
             
             if (remaining <= 0) {
                 // Timer should have completed while away
@@ -750,13 +926,15 @@ function resumeActiveTimers() {
             } else {
                 // Resume the timer
                 quest.timeLeft = remaining;
-                quest.startTime = Date.now();
                 activeTimers.set(quest.id, {
                     quest: quest,
                     startTime: quest.startTime
                 });
                 startTimerInterval(quest.id);
             }
+        } else if (quest.timerState === 'paused' && quest.pausedTime) {
+            // Keep paused state, no need to resume
+            quest.timeLeft = Math.max(0, quest.originalDuration - Math.floor(quest.pausedTime / 1000));
         }
     });
 }
@@ -797,7 +975,151 @@ function updateActiveTimersDisplay() {
     }
 }
 
-// Enhanced Quest Rendering with Categories
+// Refresh Quest System
+function updateRefreshButtonState() {
+    const refreshBtn = document.getElementById('refreshAllBtn');
+    const hasActiveTimer = quests.some(q => q.timerState === 'running');
+    const hasCompletedQuests = quests.some(q => q.done);
+    const canAfford = gold >= 50;
+
+    if (hasActiveTimer) {
+        refreshBtn.disabled = true;
+        refreshBtn.title = 'Tidak bisa refresh saat ada timer aktif';
+    } else if (!canAfford) {
+        refreshBtn.disabled = true;
+        refreshBtn.title = 'Gold tidak cukup (perlu 50 🪙)';
+    } else if (!hasCompletedQuests && quests.length >= 5) {
+        refreshBtn.disabled = true;
+        refreshBtn.title = 'Semua quest slot terisi, selesaikan quest terlebih dahulu';
+    } else {
+        refreshBtn.disabled = false;
+        refreshBtn.title = 'Refresh semua quest dengan biaya 50 🪙';
+    }
+}
+
+function refreshAllQuests() {
+    const hasActiveTimer = quests.some(q => q.timerState === 'running');
+    if (hasActiveTimer) {
+        showNotification('Tidak bisa refresh semua quest saat ada timer yang aktif!');
+        return;
+    }
+
+    if (gold < 50) {
+        showNotification('Gold tidak cukup untuk refresh semua quest! Perlu 50 🪙');
+        return;
+    }
+
+    // Count how many quests we can refresh (only non-active, non-completed ones)
+    const refreshableQuests = quests.filter(q => q.timerState === 'idle' && !q.done);
+    
+    if (refreshableQuests.length === 0) {
+        showNotification('Tidak ada quest yang bisa di-refresh!');
+        return;
+    }
+
+    gold -= 50;
+    userStats.totalGoldEarned -= 50;
+    userStats.questsRefreshed = (userStats.questsRefreshed || 0) + 1;
+
+    // Replace refreshable quests with new random ones
+    const newQuests = getRandomQuests(refreshableQuests.length);
+    
+    let newIndex = 0;
+    quests = quests.map(quest => {
+        if (quest.timerState === 'idle' && !quest.done) {
+            return newQuests[newIndex++];
+        }
+        return quest;
+    });
+
+    saveCurrentUserData();
+    loadGame();
+    showNotification(`${refreshableQuests.length} quest baru telah didapatkan!`);
+    
+    // Check achievements
+    checkAchievements();
+}
+
+function showRefreshQuestModal() {
+    const hasActiveTimer = quests.some(q => q.timerState === 'running');
+    if (hasActiveTimer) {
+        showNotification('Tidak bisa refresh quest saat ada timer yang aktif!');
+        return;
+    }
+
+    if (gold < 15) {
+        showNotification('Gold tidak cukup untuk refresh quest! Perlu 15 🪙');
+        return;
+    }
+
+    const refreshableQuests = quests.filter(q => q.timerState === 'idle' && !q.done);
+    
+    if (refreshableQuests.length === 0) {
+        showNotification('Tidak ada quest yang bisa di-refresh!');
+        return;
+    }
+
+    const refreshList = document.getElementById('refreshQuestList');
+    refreshList.innerHTML = '';
+
+    refreshableQuests.forEach(quest => {
+        const questElement = document.createElement('div');
+        questElement.className = 'refresh-quest-item';
+        questElement.onclick = () => refreshSingleQuest(quest.id);
+        questElement.innerHTML = `
+            <div class="refresh-quest-info">
+                <div class="refresh-quest-title">${quest.title}</div>
+                <div class="refresh-quest-meta">
+                    <span>${formatTime(quest.duration)}</span>
+                    <span>+${quest.xp}XP</span>
+                    <span>+${quest.gold}🪙</span>
+                </div>
+            </div>
+            <div class="quest-category">${getCategoryIcon(quest.category)}</div>
+        `;
+        refreshList.appendChild(questElement);
+    });
+
+    document.getElementById('refreshQuestModal').classList.add('active');
+}
+
+function closeRefreshQuestModal() {
+    document.getElementById('refreshQuestModal').classList.remove('active');
+}
+
+function refreshSingleQuest(questId) {
+    const questIndex = quests.findIndex(q => q.id === questId);
+    if (questIndex === -1) return;
+
+    const quest = quests[questIndex];
+    if (quest.timerState !== 'idle' || quest.done) {
+        showNotification('Tidak bisa refresh quest yang sedang aktif atau sudah selesai!');
+        return;
+    }
+
+    if (gold < 15) {
+        showNotification('Gold tidak cukup untuk refresh quest! Perlu 15 🪙');
+        return;
+    }
+
+    gold -= 15;
+    userStats.totalGoldEarned -= 15;
+    userStats.questsRefreshed = (userStats.questsRefreshed || 0) + 1;
+
+    // Replace with new random quest
+    const newQuest = getRandomQuests(1)[0];
+    quests[questIndex] = newQuest;
+
+    saveCurrentUserData();
+    loadGame();
+    closeRefreshQuestModal();
+    showNotification('Quest telah di-refresh!');
+
+    // Check achievements
+    checkAchievements();
+}
+
+// Enhanced Quest Rendering with Categories and Refresh buttons
 function renderQuests() {
     const questList = document.getElementById('questList');
     const currentCategory = document.querySelector('.category-filter.active')?.dataset.category || 'all';
@@ -867,6 +1189,8 @@ function renderQuests() {
                     `<button class="btn-timer resume" onclick="resumeTimer('${quest.id}')">▶️ Lanjutkan</button>` : ''}
                 ${!quest.done && quest.timerState !== 'idle' ? 
                     `<button class="btn-timer stop" onclick="stopTimer('${quest.id}')">⏹️ Hentikan</button>` : ''}
+                ${!quest.done && quest.timerState === 'idle' ? 
+                    `<button class="btn-timer refresh" onclick="refreshSingleQuest('${quest.id}')">🔄 Refresh (15🪙)</button>` : ''}
                 ${quest.done ? 
                     `<button class="btn-timer complete" disabled>✅ Selesai</button>` : ''}
             </div>
@@ -875,6 +1199,7 @@ function renderQuests() {
     });
     
     updateActiveTimersDisplay();
+    updateRefreshButtonState();
 }
 
 // Utility Functions
@@ -895,6 +1220,7 @@ function getCategoryIcon(category) {
         study: '📚',
         exercise: '💪',
         creative: '🎨',
+        personal: '👤',
         other: '📝'
     };
     return icons[category] || '📝';
@@ -951,7 +1277,8 @@ function showQuestDetail(questId) {
             ${!quest.done ? `
             <div class="detail-actions">
                 ${quest.timerState === 'idle' ? 
-                    `<button class="btn-primary" onclick="startTimer('${quest.id}'); closeQuestDetailModal()">▶️ Mulai Timer</button>` : ''}
+                    `<button class="btn-primary" onclick="startTimer('${quest.id}'); closeQuestDetailModal()">▶️ Mulai Timer</button>
+                     <button class="btn-timer refresh" onclick="refreshSingleQuest('${quest.id}'); closeQuestDetailModal()">🔄 Refresh Quest (15🪙)</button>` : ''}
                 ${quest.timerState === 'running' ? 
                     `<button class="btn-timer pause" onclick="pauseTimer('${quest.id}'); closeQuestDetailModal()">⏸️ Jeda Timer</button>` : ''}
                 ${quest.timerState === 'paused' ? 
@@ -960,78 +1287,6 @@ function showQuestDetail(questId) {
             ` : ''}
         </div>
     `;
-    
-    // Add CSS for quest detail modal
-    const style = document.createElement('style');
-    style.textContent = `
-        .quest-detail {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .detail-section h4 {
-            color: var(--primary-dark);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-        }
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(192, 147, 62, 0.2);
-        }
-        .detail-label {
-            font-weight: 500;
-            color: var(--text-light);
-        }
-        .detail-value {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-        .detail-value.running {
-            color: var(--timer-active);
-        }
-        .detail-value.paused {
-            color: var(--timer-paused);
-        }
-        .detail-value.completed {
-            color: var(--timer-completed);
-        }
-        .reward-info {
-            display: flex;
-            gap: 1rem;
-        }
-        .reward-xp, .reward-gold {
-            background: rgba(192, 147, 62, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .reward-xp {
-            color: var(--primary-dark);
-        }
-        .reward-gold {
-            color: var(--primary-gold);
-        }
-        .detail-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-    `;
-    
-    // Remove existing style if any
-    const existingStyle = document.querySelector('#questDetailStyle');
-    if (existingStyle) existingStyle.remove();
-    
-    style.id = 'questDetailStyle';
-    document.head.appendChild(style);
     
     document.getElementById('questDetailModal').classList.add('active');
 }
@@ -1082,7 +1337,7 @@ function buyItem(itemId) {
     
     gold -= item.price;
     inventory.push(itemId);
-    userStats.totalGoldEarned -= item.price; // Not counting spent gold as earned
+    userStats.totalGoldEarned -= item.price;
     
     saveCurrentUserData();
     loadGame();
@@ -1175,10 +1430,17 @@ function checkAchievements() {
     }
     
     // Time Investor achievement
-    if (userStats.totalTimeSpent >= 3600 && !achievements.includes('time_investor')) { // 1 hour
+    if (userStats.totalTimeSpent >= 3600 && !achievements.includes('time_investor')) {
         achievements.push('time_investor');
         newAchievements = true;
         showNotification('🏆 Pencapaian terbuka: Investor Waktu!');
+    }
+    
+    // Quest Refresher achievement
+    if ((userStats.questsRefreshed || 0) >= 10 && !achievements.includes('quest_refresher')) {
+        achievements.push('quest_refresher');
+        newAchievements = true;
+        showNotification('🏆 Pencapaian terbuka: Pemburu Quest!');
     }
     
     if (newAchievements) {
@@ -1226,6 +1488,9 @@ function renderAchievements() {
                 case 'time_investor':
                     const hours = Math.floor(userStats.totalTimeSpent / 3600);
                     progressText = `(${hours}j/1j)`;
+                    break;
+                case 'quest_refresher':
+                    progressText = `(${userStats.questsRefreshed || 0}/10)`;
                     break;
             }
         }
@@ -1308,7 +1573,8 @@ function initParticles() {
             default: ['#ffcc33', '#ff8800', '#c0933e'],
             levelup: ['#ff00ff', '#ff66ff', '#cc00cc'],
             purchase: ['#00ff00', '#66ff66', '#00cc00'],
-            completed: ['#28a745', '#20c997', '#1e7e34']
+            completed: ['#28a745', '#20c997', '#1e7e34'],
+            refresh: ['#17a2b8', '#138496', '#117a8b']
         };
         
         const colorSet = colors[type] || colors.default;
@@ -1411,6 +1677,14 @@ function setupEventListeners() {
             renderQuests();
         });
     });
+    
+    // Add refresh individual quests button to quest controls
+    const questControls = document.querySelector('.quest-controls');
+    const refreshIndividualBtn = document.createElement('button');
+    refreshIndividualBtn.className = 'btn-refresh-all';
+    refreshIndividualBtn.innerHTML = '🔄 Refresh Quest Pilihan <span class="cost-badge">15 🪙</span>';
+    refreshIndividualBtn.onclick = showRefreshQuestModal;
+    questControls.appendChild(refreshIndividualBtn);
     
     // Modal close on background click
     document.addEventListener('click', function(e) {
