@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raga Nusantara v3.1 - RPG Produktivitas</title>
+    <title>Raga Nusantara v3.2 - RPG Produktivitas</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -13,7 +13,7 @@
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <h2>Memuat Kerajaan Nusantara...</h2>
-            <p>Mempersiapkan sistem quest timer yang canggih!</p>
+            <p>Mempersiapkan sistem quest dan timer yang lebih baik!</p>
         </div>
     </div>
 
@@ -21,17 +21,17 @@
     <section id="splashPage" class="page">
         <div class="splash-container">
             <div class="splash-header">
-                <h1 class="game-title">🏯 RAGA NUSANTARA v3.1</h1>
-                <p class="game-subtitle">RPG Produktivitas dengan Timer Quest Canggih</p>
+                <h1 class="game-title">🏯 RAGA NUSANTARA v3.2</h1>
+                <p class="game-subtitle">RPG Produktivitas dengan Timer Quest & Refresh System</p>
             </div>
             <div class="splash-content">
                 <div class="feature-list">
-                    <div class="feature-item">⏰ Timer Quest</div>
+                    <div class="feature-item">⏰ Timer Per Detik</div>
+                    <div class="feature-item">🔄 Refresh Quest</div>
+                    <div class="feature-item">🎯 20+ Variasi Quest</div>
                     <div class="feature-item">📊 Progress Real-time</div>
-                    <div class="feature-item">🎯 Kategori Quest</div>
                     <div class="feature-item">⚡ Auto Completion</div>
                     <div class="feature-item">💾 Persistent Timer</div>
-                    <div class="feature-item">🎵 Musik Tradisional</div>
                 </div>
                 <div class="splash-buttons">
                     <button class="btn-primary" onclick="showSignup()">Memulai Petualangan</button>
@@ -193,6 +193,14 @@
                     </div>
                 </div>
                 
+                <!-- Quest Controls -->
+                <div class="quest-controls">
+                    <button class="btn-refresh-all" onclick="refreshAllQuests()" id="refreshAllBtn">
+                        🔄 Refresh Semua Quest
+                        <span class="cost-badge">50 🪙</span>
+                    </button>
+                </div>
+                
                 <!-- Quest Categories Filter -->
                 <div class="quest-categories">
                     <button class="category-filter active" data-category="all">Semua</button>
@@ -200,6 +208,7 @@
                     <button class="category-filter" data-category="study">📚 Belajar</button>
                     <button class="category-filter" data-category="exercise">💪 Olahraga</button>
                     <button class="category-filter" data-category="creative">🎨 Kreatif</button>
+                    <button class="category-filter" data-category="personal">👤 Personal</button>
                     <button class="category-filter" data-category="other">📝 Lainnya</button>
                 </div>
                 
@@ -298,6 +307,23 @@
             </div>
             <div class="modal-body">
                 <div id="questDetailContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Quest Modal -->
+    <div id="refreshQuestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔄 Refresh Quest</h3>
+                <button class="modal-close" onclick="closeRefreshQuestModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p>Pilih quest yang ingin di-refresh:</p>
+                <div id="refreshQuestList" class="refresh-quest-list"></div>
+                <div class="refresh-cost">
+                    Biaya per quest: <strong>15 🪙</strong>
+                </div>
             </div>
         </div>
     </div>
