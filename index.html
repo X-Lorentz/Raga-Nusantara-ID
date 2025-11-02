@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raga Nusantara V3.1</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1 class="game-title">RAGA NUSANTARA V3.1</h1>
+            <div class="player-info">
+                <div id="avatar-display"></div>
+                <div class="player-stats">
+                    <div class="stat-bar">
+                        <span class="stat-label">Level:</span>
+                        <span id="level">1</span>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">EXP:</span>
+                        <div class="progress-bar">
+                            <div id="exp-fill" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">HP:</span>
+                        <div class="progress-bar">
+                            <div id="hp-fill" class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="game-main">
+            <div class="game-area">
+                <div id="scene-display">
+                    <h2 class="scene-title">Selamat Datang di Raga Nusantara V3.1</h2>
+                    <div class="scene-content">
+                        <p>Petualangan epik menanti Anda di dunia Nusantara yang penuh misteri. Jelajahi lokasi-lokasi eksotis, kumpulkan item langka, selesaikan quest, dan tingkatkan kemampuan Anda.</p>
+                        <p>Pilih avatar Anda untuk memulai perjalanan!</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="start-btn" class="btn btn-primary">Mulai Petualangan</button>
+                    <button id="map-btn" class="btn btn-secondary">Peta</button>
+                    <button id="skills-btn" class="btn btn-secondary">Skill</button>
+                    <button id="inventory-btn" class="btn btn-secondary">Inventory</button>
+                    <button id="quests-btn" class="btn btn-success">Quest</button>
+                    <button id="save-btn" class="btn btn-primary">Simpan Game</button>
+                </div>
+            </div>
+
+            <!-- Side Panels -->
+            <aside class="side-panels">
+                <div class="panel inventory-panel">
+                    <h3>
+                        Inventory
+                        <button class="toggle-panel">−</button>
+                    </h3>
+                    <div id="inventory-list" class="item-list"></div>
+                </div>
+                
+                <div class="panel achievements-panel">
+                    <h3>
+                        Pencapaian
+                        <button class="toggle-panel">−</button>
+                    </h3>
+                    <div id="achievements-list" class="item-list"></div>
+                </div>
+
+                <div class="panel quests-panel">
+                    <h3>
+                        Quest Aktif
+                        <button class="toggle-panel">−</button>
+                    </h3>
+                    <div id="quests-list" class="item-list"></div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="game-footer">
+            <p>Raga Nusantara V3.1 &copy; 2023 - Game Petualangan Nusantara</p>
+        </footer>
+
+        <!-- Start Modal -->
+        <div id="start-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Pilih Avatar Anda</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="avatar-selection">
+                    <div class="avatar-option" data-avatar="tsatria">
+                        <img src="" alt="Tsatria" class="avatar-img" id="tsatria-img">
+                        <div class="avatar-name">Ksatriya</div>
+                        <div class="avatar-description">Prajurit pemberani dengan kekuatan fisik tinggi</div>
+                    </div>
+                    <div class="avatar-option" data-avatar="pendeta">
+                        <img src="" alt="Pendeta" class="avatar-img" id="pendeta-img">
+                        <div class="avatar-name">Pendeta</div>
+                        <div class="avatar-description">Ahli spiritual dengan kemampuan penyembuhan</div>
+                    </div>
+                    <div class="avatar-option" data-avatar="petani">
+                        <img src="" alt="Petani" class="avatar-img" id="petani-img">
+                        <div class="avatar-name">Petani</div>
+                        <div class="avatar-description">Pengelola alam dengan ketahanan tinggi</div>
+                    </div>
+                    <div class="avatar-option" data-avatar="bedgeng">
+                        <img src="" alt="Bedgeng" class="avatar-img" id="bedgeng-img">
+                        <div class="avatar-name">Bedgeng</div>
+                        <div class="avatar-description">Petualang misterius dengan kemampuan stealth</div>
+                    </div>
+                    <div class="avatar-option" data-avatar="peluki">
+                        <img src="" alt="Peluki" class="avatar-img" id="peluki-img">
+                        <div class="avatar-name">Peluki</div>
+                        <div class="avatar-description">Seniman kreatif dengan kemampuan persuasi</div>
+                    </div>
+                </div>
+                <button id="confirm-avatar" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Konfirmasi Pilihan</button>
+            </div>
+        </div>
+
+        <!-- Map Modal -->
+        <div id="map-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Peta Nusantara</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="map-container">
+                    <div class="location active" data-location="desa">
+                        <div class="location-icon">🏠</div>
+                        <div class="location-name">Desa</div>
+                        <div class="location-description">Tempat awal petualangan</div>
+                    </div>
+                    <div class="location" data-location="hutan">
+                        <div class="location-icon">🌲</div>
+                        <div class="location-name">Hutan</div>
+                        <div class="location-description">Hutan penuh misteri</div>
+                    </div>
+                    <div class="location locked" data-location="gunung">
+                        <div class="location-icon">⛰️</div>
+                        <div class="location-name">Gunung</div>
+                        <div class="location-description">Butuh Level 5</div>
+                    </div>
+                    <div class="location locked" data-location="sungai">
+                        <div class="location-icon">🌊</div>
+                        <div class="location-name">Sungai</div>
+                        <div class="location-description">Butuh Level 3</div>
+                    </div>
+                    <div class="location locked" data-location="gua">
+                        <div class="location-icon">🕳️</div>
+                        <div class="location-name">Gua</div>
+                        <div class="location-description">Butuh Level 8</div>
+                    </div>
+                    <div class="location locked" data-location="kota">
+                        <div class="location-icon">🏛️</div>
+                        <div class="location-name">Kota</div>
+                        <div class="location-description">Butuh Level 10</div>
+                    </div>
+                </div>
+                <button id="travel-btn" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Travel ke Lokasi</button>
+            </div>
+        </div>
+
+        <!-- Skills Modal -->
+        <div id="skills-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Skill dan Kemampuan</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="skills-container" id="skills-list">
+                    <!-- Skills will be populated by JavaScript -->
+                </div>
+                <div class="stat-bar" style="justify-content: center; margin-top: 20px;">
+                    <span class="stat-label">Skill Points:</span>
+                    <span id="skill-points">5</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combat Modal -->
+        <div id="combat-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Pertarungan</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="combat-container">
+                    <div class="combatant combatant-player">
+                        <h3 id="player-name">Player</h3>
+                        <div class="progress-bar">
+                            <div id="player-hp" class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <p>HP: <span id="player-hp-text">100/100</span></p>
+                    </div>
+                    
+                    <div class="combat-vs">VS</div>
+                    
+                    <div class="combatant combatant-enemy">
+                        <h3 id="enemy-name">Musuh</h3>
+                        <div class="progress-bar">
+                            <div id="enemy-hp" class="progress-fill" style="width: 100%"></div>
+                        </div>
+                        <p>HP: <span id="enemy-hp-text">100/100</span></p>
+                    </div>
+                </div>
+                
+                <div class="combat-actions">
+                    <button class="btn btn-primary combat-action" data-action="attack">Serang</button>
+                    <button class="btn btn-secondary combat-action" data-action="defend">Bertahan</button>
+                    <button class="btn btn-success combat-action" data-action="skill">Gunakan Skill</button>
+                    <button class="btn btn-danger combat-action" data-action="flee">Kabur</button>
+                </div>
+                
+                <div class="combat-log" id="combat-log">
+                    <div class="log-entry">Pertarungan dimulai!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
